@@ -35,7 +35,7 @@ class ActorDAO:
          
     def getAll(self):
         cursor = self.getcursor()
-        sql="select * from actor"
+        sql="SELECT * FROM actor"
         cursor.execute(sql)
         results = cursor.fetchall()
         returnArray = []
