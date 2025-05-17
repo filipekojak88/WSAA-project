@@ -43,6 +43,7 @@ def create():
         "name": request.json['name'],
         "gender": request.json['gender'],
         "dob": request.json['dob'],
+        "country": request.json['country']
     }
     addedActor = actorDAO.create(actor)
     

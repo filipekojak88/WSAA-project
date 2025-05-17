@@ -63,7 +63,7 @@ class ActorDAO:
     def create(self, actor):
         cursor = self.getcursor()
         sql="INSERT INTO actor (name, gender, dob, country_id) VALUES (%s, %s, %s, %s)"
-        values = (actor.get("name"), actor.get("gender"), actor.get("dob"), actor.get("country_id"))
+        values = (actor.get("name"), actor.get("gender"), actor.get("dob"), actor.get("country"))
         cursor.execute(sql, values)
 
         self.connection.commit()
