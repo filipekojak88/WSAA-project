@@ -221,7 +221,7 @@
                 
             },
             "error":function(xhr,status,error){
-                console.log("error: "+status+" msg:"+error);
+                console.log("Error: " + status + " msg:" + error);
             }
         });
 
@@ -263,7 +263,7 @@
                 console.log("Actor updated:", response);
             },
             "error":function(xhr,status,error){
-                console.error("Update error: ", status, error);
+                console.error("Update error: " + status + " msg: " + error);
             }
         });
     }
@@ -281,7 +281,7 @@
                   
             },
             "error":function(xhr,status,error){
-                console.log("error: "+status+" msg:"+error);
+                console.log("Error: " + status + " msg:" + error);
             }
         });
     }
@@ -308,7 +308,7 @@
                 showViewAll();
             },
             error: function (xhr, status, error) {
-                console.error("Add error:", status, error);
+                console.error("Add error:", + status + " msg: " + error);
             }
         });
     }
@@ -320,9 +320,10 @@
     
 
     <!-- Bootstrap JS dependencies -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa2FYdR2lE4lW7EFD0x4I9T8+"
-        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"
+        integrity="sha512-XT8ce3n5OtgwA7sm3ZBy2yl4ym9qEfi+Y8ImjylIQvMETrQNVhKN2YcZQNkUNpZb9uENH3Sc8lT1zShGvq9u3A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
