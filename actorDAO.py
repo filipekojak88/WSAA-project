@@ -35,21 +35,23 @@ class ActorDAO:
          
     def getAll(self):
         cursor = self.getcursor()
-        sql="SELECT * FROM actor"
+        sql="""SELECT actor.id, actor.name, actor.gender, actor.dob, country.name 
+             FROM actor 
+             JOIN country ON actor.country_id = country.id"""
         cursor.execute(sql)
         results = cursor.fetchall()
-        returnArray = []
-        #print(results)
-        for result in results:
-            #print(result)
-            returnArray.append(self.convertToDictionary(result))
-        
+        returnArray = []        
+        for result in results:            
+            returnArray.append(self.convertToDictionary(result))        
         self.closeAll()
         return returnArray
 
     def findByID(self, id):
         cursor = self.getcursor()
-        sql="SELECT * FROM actor WHERE id = %s"
+        sql="""SELECT actor.id, actor.name, actor.gender, actor.dob, country.name 
+             FROM actor 
+             JOIN country ON actor.country_id = country.id
+             WHERE actor.id = %s"""
         values = (id,)
 
         cursor.execute(sql, values)
@@ -60,8 +62,8 @@ class ActorDAO:
 
     def create(self, actor):
         cursor = self.getcursor()
-        sql="INSERT INTO actor (name,gender,dob) VALUES (%s,%s,%s)"
-        values = (actor.get("name"), actor.get("gender"), actor.get("dob"))
+        sql="INSERT INTO actor (name, gender, dob, country_id) VALUES (%s, %s, %s, %s)"
+        values = (actor.get("name"), actor.get("gender"), actor.get("dob"), actor.get("country_id"))
         cursor.execute(sql, values)
 
         self.connection.commit()
@@ -73,9 +75,9 @@ class ActorDAO:
 
     def update(self, id, actor):
         cursor = self.getcursor()
-        sql="UPDATE actor SET name= %s, gender=%s, dob=%s  WHERE id = %s"
+        sql = "UPDATE actor SET name=%s, gender=%s, dob=%s, country_id=%s WHERE id=%s"
         print(f"Update actor {actor}")
-        values = (actor.get("name"), actor.get("gender"), actor.get("dob"), id)
+        values = (actor.get("name"), actor.get("gender"), actor.get("dob"), actor.get("country_id"), id)
         cursor.execute(sql, values)
         self.connection.commit()
         self.closeAll()
@@ -93,13 +95,20 @@ class ActorDAO:
         print("Deleted actor successfully!")
 
     def convertToDictionary(self, result_line):
-        attkeys=['id','name','gender', "dob"]
+        attkeys = ['id', 'name', 'gender', 'dob', 'country']
         actor = {}
-        current_key = 0
-        for attrib in result_line:
-            actor[attkeys[current_key]] = attrib
-            current_key = current_key + 1 
+        for i, attrib in enumerate(result_line):
+            actor[attkeys[i]] = attrib
         return actor
+    
+    def getAllCountries(self):
+        cursor = self.getcursor()
+        sql = "SELECT id, name FROM country ORDER BY name"
+        cursor.execute(sql)
+        results = cursor.fetchall()
+        country_list = [{"id": row[0], "name": row[1]} for row in results]
+        self.closeAll()
+        return country_list
 
         
 actorDAO = ActorDAO()

@@ -13,10 +13,9 @@
                 <tr>
                         <th>ID</th>
                         <th>Name</th>
-                        <th>
-                            Gender
-                        </th>
+                        <th>Gender</th>
                         <th>Date of Birth<br><span style="font-size: 0.75em; color: gray;">(DD-MM-YYYY)</span></th>
+                        <th>Country</th>
                         <th>Update</th>
                         <th>Delete</th>
                 </tr>
@@ -48,6 +47,14 @@
                 <label for="dob">Date of Birth<br><span style="font-size: 0.75em; color: gray;">(DD/MM/YYYY)</span></label>
                 <input type="date" name="dob" class="form-control" id="dob" />
             </div>
+
+            <div class="form-group">
+                <label for="country">Country</label>
+                <select name="country" class="form-control" id="countrySelect">
+                    <option value="">-- Select Country --</option>
+                </select>
+            </div>
+
             <div class="d-flex mt-3">
                 <button id="doAddButton" class="btn btn-success mr-2" onclick="doAdd()">Add</button>
                 <button id="doUpdateButton" class="btn btn-info" onclick="doUpdate()">Update</button>
@@ -107,6 +114,8 @@
         actor.name = form.querySelector('input[name="name"]').value
         actor.gender = form.querySelector('input[name="gender"]').value
         actor.dob = form.querySelector('input[name="dob"]').value
+        const countryId = Object.keys(countryMap).find(key => countryMap[key] === actor.country)
+        form.querySelector('select[name="country"]').value = countryId || ""
         console.log(JSON.stringify(actor))
         addActorAjax(actor)
         
@@ -145,9 +154,11 @@
         var cell4 = rowElement.insertCell(3);
         cell4.innerHTML = formatDate(actor.dob)
         var cell5 = rowElement.insertCell(4);
-        cell5.innerHTML = '<button class="btn btn-info btn-sm" onclick="showUpdate(this)">Update</button>'
+        cell5.innerHTML = countryMap[actor.country] || actor.country
         var cell6 = rowElement.insertCell(5);
-        cell6.innerHTML = '<button class="btn btn-danger btn-sm" onclick="doDelete(this)">Delete</button>'
+        cell6.innerHTML = '<button class="btn btn-info btn-sm" onclick="showUpdate(this)">Update</button>'
+        var cell7 = rowElement.insertCell(6);
+        cell7.innerHTML = '<button class="btn btn-danger btn-sm" onclick="doDelete(this)">Delete</button>'
 
     }
 
@@ -157,6 +168,7 @@
         form.querySelector('input[name="name"]').value=''
         form.querySelector('select[name="gender"]').value=''
         form.querySelector('input[name="dob"]').value=''
+        form.querySelector('select[name="country"]').value=''
     }
     function getActorFromRow(rowElement){
         var actor ={}
@@ -164,6 +176,8 @@
         actor.name = rowElement.cells[1].firstChild.textContent.trim()
         actor.gender = rowElement.cells[2].firstChild.textContent.trim()
         actor.dob = rowElement.cells[3].firstChild.textContent.trim()
+        actor.country = rowElement.cells[4].firstChild.textContent.trim()
+
         return actor
     }
     function setActorInRow(rowElement, actor){
@@ -171,15 +185,17 @@
         rowElement.cells[1].firstChild.textContent= actor.name
         rowElement.cells[2].firstChild.textContent= actor.gender
         rowElement.cells[3].firstChild.textContent= formatDate(actor.dob)
+        rowElement.cells[4].firstChild.textContent = actor.country
     }
     function populateFormWithActor(actor){
         var form = document.getElementById('addUpdateForm')
-        form.querySelector('input[name="id"]')
+        actor.id = form.querySelector('input[name="id"]').value
+        actor.name = form.querySelector('input[name="name"]').value
+        actor.gender = form.querySelector('select[name="gender"]').value
+        actor.dob = form.querySelector('input[name="dob"]').value
+        const countryId = Object.keys(countryMap).find(key => countryMap[key] === actor.country)
+        form.querySelector('select[name="country"]').value = countryId || ""
 
-        form.querySelector('input[name="id"]').value  = actor.id
-        form.querySelector('input[name="name"]').value= actor.name
-        form.querySelector('select[name="gender"]').value= actor.gender
-        form.querySelector('input[name="dob"]').value= actor.dob
         return actor
     }
     function getActorFromForm(){
@@ -189,6 +205,8 @@
         actor.name = form.querySelector('input[name="name"]').value
         actor.gender = form.querySelector('select[name="gender"]').value
         actor.dob = form.querySelector('input[name="dob"]').value
+        const countryId = Object.keys(countryMap).find(key => countryMap[key] === actor.country)
+        form.querySelector('select[name="country"]').value = countryId || ""
         console.log(JSON.stringify(actor))
         return actor
     }
@@ -211,42 +229,44 @@
         });
 
     }
-    function addActorAjax(actor){
-        //var actor = {"name":"John Kennedy", "gender":"male","dob":1988/07/28}
-        console.log(JSON.stringify(actor));
+    let countryMap = {};
+
+    function loadCountries() {
         $.ajax({
-            "url": "/actors",
-            "method":"POST",
-            "data":JSON.stringify(actor),
-            "dataType": "JSON",
-            contentType: "application/json; charset=utf-8",
-            "success":function(result){
-                //console.log(result);
-                actor.id = result.id
-                addActorToTable(actor)
-                clearForm()
-                showViewAll()
+            url: '/countries',
+            method: 'GET',
+            dataType: 'JSON',
+            success: function (result) {
+                var countrySelect = document.getElementById('countrySelect');
+                result.forEach(function (country) {
+                    countryMap[country.id] = country.name;
+                    var option = document.createElement('option');
+                    option.value = country.id;
+                    option.text = country.name;
+                    countrySelect.appendChild(option);
+                });
             },
-            "error":function(xhr,status,error){
-                console.log("error: "+status+" msg:"+error);
+            error: function (xhr, status, error) {
+                console.log("Error loading countries: " + status + " msg: " + error);
             }
         });
     }
+
+       
     function updateActorAjax(actor){
         //var actor = {"name":"John Kennedy", "gender":"male","dob":1988/07/28}
         console.log(JSON.stringify(actor));
         $.ajax({
             "url": "/actors/"+encodeURI(actor.id),
-            "method":"PUT",
+            "method":"PUT",            
             "data":JSON.stringify(actor),
             "dataType": "JSON",
             contentType: "application/json; charset=utf-8",
-            "success":function(result){
-               // console.log(result);
-                  
+            success: function (response) {
+                console.log("Actor updated:", response);
             },
             "error":function(xhr,status,error){
-                console.log("error: "+status+" msg:"+error);
+                console.error("Update error: ", status, error);
             }
         });
     }
@@ -274,8 +294,33 @@
     }
 
     getAllAjax();
-  
+
+    function addActorAjax(actor) {
+        //var actor = {"name":"John Kennedy", "gender":"male","dob":1988/07/28}
+        console.log(JSON.stringify(actor));
+        $.ajax({
+            "url": "/actors",
+            "method": "POST",
+            "data": JSON.stringify(actor),
+            "dataType": "JSON",
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                console.log("Actor added:", response);
+                addActorToTable(response);
+                clearForm();
+                showViewAll();
+            },
+            error: function (xhr, status, error) {
+                console.error("Add error:", status, error);
+            }
+        });
+    }
+    $(document).ready(function () {
+        getAllAjax();
+        loadCountries();
+    });
     </script>
+    
 
     <!-- Bootstrap JS dependencies -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
