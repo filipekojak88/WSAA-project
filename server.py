@@ -3,13 +3,10 @@ from flask_cors import CORS, cross_origin
 from actorDAO import actorDAO
 from datetime import datetime
 
-app = Flask(__name__)
-cors = CORS(app) # allow CORS for all domains on all routes.
+app = Flask(__name__, static_url_path='', static_folder='.')
+CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
-
-
-app = Flask(__name__, static_url_path='', static_folder='.')
 
 #app = Flask(__name__)
 
@@ -34,7 +31,7 @@ def findById(id):
 
     return jsonify(foundActor)
 
-#curl  -i -H "Content-Type:application/json" -X POST -d "{\"name\":\"hello\",\"gender\":\"someone\",\"date\":1988/07/28}" http://127.0.0.1:5000/actors
+#curl  -i -H "Content-Type:application/json" -X POST -d "{\"name\":\"hello\",\"gender\":\"someone\",\"dob\":1988/07/28}" http://127.0.0.1:5000/actors
 @app.route('/actors', methods=['POST'])
 @cross_origin()
 def create():
@@ -45,13 +42,13 @@ def create():
     actor = {
         "name": request.json['name'],
         "gender": request.json['gender'],
-        "date": request.json['date'],
+        "dob": request.json['dob'],
     }
     addedActor = actorDAO.create(actor)
     
-    return jsonify(addedactor)
+    return jsonify(addedActor)
 
-#curl  -i -H "Content-Type:application/json" -X PUT -d "{\"name\":\"hello\",\"gender\":\"someone\",\"date\":1988/07/28}" http://127.0.0.1:5000/actors/1
+#curl  -i -H "Content-Type:application/json" -X PUT -d "{\"name\":\"hello\",\"gender\":\"someone\",\"dob\":1988/07/28}" http://127.0.0.1:5000/actors/1
 @app.route('/actors/<int:id>', methods=['PUT'])
 @cross_origin()
 def update(id):
