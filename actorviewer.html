@@ -53,6 +53,13 @@
 
     </body>
     <script>
+    function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // months are 0-based
+            const year = date.getFullYear();
+            return `${day}-${month}-${year}`;
+    }
     function showAdd(){
         document.getElementById('showAddButton').style.display="none"
         document.getElementById('actorTable').style.display="none"
@@ -132,7 +139,7 @@
         var cell3 = rowElement.insertCell(2);
         cell3.innerHTML = actor.gender
         var cell4 = rowElement.insertCell(3);
-        cell4.innerHTML = actor.dob
+        cell4.innerHTML = formatDate(actor.dob)
         var cell5 = rowElement.insertCell(4);
         cell5.innerHTML = '<button class="btn btn-info btn-sm" onclick="showUpdate(this)">Update</button>'
         var cell6 = rowElement.insertCell(5);
@@ -159,7 +166,7 @@
         rowElement.cells[0].firstChild.textContent= actor.id  
         rowElement.cells[1].firstChild.textContent= actor.name
         rowElement.cells[2].firstChild.textContent= actor.gender
-        rowElement.cells[3].firstChild.textContent= actor.dob
+        rowElement.cells[3].firstChild.textContent= formatDate(actor.dob)
     }
     function populateFormWithActor(actor){
         var form = document.getElementById('addUpdateForm')
