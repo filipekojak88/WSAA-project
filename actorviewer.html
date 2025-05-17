@@ -47,6 +47,7 @@
         
             <button id="doAddButton" class="btn btn-success mr-2" onclick="doAdd()">Add</button>
             <button id="doUpdateButton" class="btn btn-info" onclick="doUpdate()">Update</button>
+            <button class="btn btn-secondary ml-2" onclick="cancelForm()">Cancel</button>
         </div>
 
     </body>
@@ -255,6 +256,11 @@
             }
         });
     }
+    function cancelForm() {
+            clearForm();
+            showViewAll();
+    }
+
     getAllAjax();
   
     </script>
