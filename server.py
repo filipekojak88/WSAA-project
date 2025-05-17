@@ -83,7 +83,11 @@ def delete(id):
     actorDAO.delete(id)
     return jsonify({"done":True})
 
-
+@app.route('/countries')
+def get_countries():
+    from actorDAO import actorDAO
+    countries = actorDAO.getAllCountries()
+    return jsonify(countries)
 
 
 if __name__ == '__main__' :

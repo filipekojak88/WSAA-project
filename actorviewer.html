@@ -114,8 +114,7 @@
         actor.name = form.querySelector('input[name="name"]').value
         actor.gender = form.querySelector('input[name="gender"]').value
         actor.dob = form.querySelector('input[name="dob"]').value
-        const countryId = Object.keys(countryMap).find(key => countryMap[key] === actor.country)
-        form.querySelector('select[name="country"]').value = countryId || ""
+        actor.country = form.querySelector('select[name="country"]').value
         console.log(JSON.stringify(actor))
         addActorAjax(actor)
         
@@ -189,12 +188,11 @@
     }
     function populateFormWithActor(actor){
         var form = document.getElementById('addUpdateForm')
-        actor.id = form.querySelector('input[name="id"]').value
-        actor.name = form.querySelector('input[name="name"]').value
-        actor.gender = form.querySelector('select[name="gender"]').value
-        actor.dob = form.querySelector('input[name="dob"]').value
-        const countryId = Object.keys(countryMap).find(key => countryMap[key] === actor.country)
-        form.querySelector('select[name="country"]').value = countryId || ""
+        form.querySelector('input[name="id"]').value = actor.id
+        form.querySelector('input[name="name"]').value = actor.name
+        form.querySelector('select[name="gender"]').value = actor.gender
+        form.querySelector('input[name="dob"]').value = actor.dob
+        form.querySelector('select[name="country"]').value = actor.country
 
         return actor
     }
@@ -205,8 +203,7 @@
         actor.name = form.querySelector('input[name="name"]').value
         actor.gender = form.querySelector('select[name="gender"]').value
         actor.dob = form.querySelector('input[name="dob"]').value
-        const countryId = Object.keys(countryMap).find(key => countryMap[key] === actor.country)
-        form.querySelector('select[name="country"]').value = countryId || ""
+        actor.country = form.querySelector('select[name="country"]').value
         console.log(JSON.stringify(actor))
         return actor
     }
