@@ -62,8 +62,17 @@ class ActorDAO:
 
     def create(self, actor):
         cursor = self.getcursor()
+
+        try:
+            country_id = int(actor.get("country"))  # Ensure it's an integer
+        except (ValueError, TypeError):
+            self.closeAll()
+            raise ValueError("Invalid country ID provided.")
+        
         sql="INSERT INTO actor (name, gender, dob, country_id) VALUES (%s, %s, %s, %s)"
-        values = (actor.get("name"), actor.get("gender"), actor.get("dob"), actor.get("country"))
+        values = (actor.get("name"), actor.get("gender"), actor.get("dob"), country_id)
+        print("Actor to insert:", actor)
+        print("SQL Values:", values)
         cursor.execute(sql, values)
 
         self.connection.commit()

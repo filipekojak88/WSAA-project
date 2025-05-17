@@ -115,7 +115,7 @@
         actor.gender = form.querySelector('select[name="gender"]').value
         actor.dob = form.querySelector('input[name="dob"]').value
         actor.country = form.querySelector('select[name="country"]').value
-        console.log(JSON.stringify(actor))
+        console.log("Actor object to send:", JSON.stringify(actor))
         addActorAjax(actor)
         
         
