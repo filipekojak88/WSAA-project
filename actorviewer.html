@@ -7,7 +7,7 @@
     </head>
     <body>
         <h1>Actors</h1>
-        <div> <button id="showCreateButton" class="btn btn-primary mb-3" onclick="showCreate()">Create</button></div>
+        <div> <button id="showAddButton" class="btn btn-primary mb-3" onclick="showAdd()">Add</button></div>
         <div>
             <table class="table" id="actorTable">
                 <tr>
@@ -23,9 +23,9 @@
                 
             </table>
         </div>
-        <div id='createUpdateForm' style="display: none" class="p-3 border rounded bg-light">
+        <div id='addUpdateForm' style="display: none" class="p-3 border rounded bg-light">
             <h2>
-                <span id="createLabel" style="display:inline;">Create an</span>
+                <span id="addLabel" style="display:inline;">Add an</span>
                 <span id="updateLabel" style="display:none;">Update</span> Actor
             </h2>
             <input type="hidden" name="id" />
@@ -45,38 +45,38 @@
                 <input type="date" name="dob" class="form-control" id="dob" />
             </div>
         
-            <button id="doCreateButton" class="btn btn-success mr-2" onclick="doCreate()">Create</button>
+            <button id="doAddButton" class="btn btn-success mr-2" onclick="doAdd()">Add</button>
             <button id="doUpdateButton" class="btn btn-info" onclick="doUpdate()">Update</button>
         </div>
 
     </body>
     <script>
-    function showCreate(){
-        document.getElementById('showCreateButton').style.display="none"
+    function showAdd(){
+        document.getElementById('showAddButton').style.display="none"
         document.getElementById('actorTable').style.display="none"
-        document.getElementById('createUpdateForm').style.display="block"
+        document.getElementById('addUpdateForm').style.display="block"
 
-        document.getElementById('createLabel').style.display="inline"
+        document.getElementById('addLabel').style.display="inline"
         document.getElementById('updateLabel').style.display="none"
 
-        document.getElementById('doCreateButton').style.display="block"
+        document.getElementById('doAddButton').style.display="block"
         document.getElementById('doUpdateButton').style.display="none"
 
     }
     function showViewAll(){
-        document.getElementById('showCreateButton').style.display="block"
+        document.getElementById('showAddButton').style.display="block"
         document.getElementById('actorTable').style.display="block"
-        document.getElementById('createUpdateForm').style.display="none"
+        document.getElementById('addUpdateForm').style.display="none"
     }
     function showUpdate(buttonElement){
-        document.getElementById('showCreateButton').style.display="none"
+        document.getElementById('showAddButton').style.display="none"
         document.getElementById('actorTable').style.display="none"
-        document.getElementById('createUpdateForm').style.display="block"
+        document.getElementById('addUpdateForm').style.display="block"
 
-        document.getElementById('createLabel').style.display="none"
+        document.getElementById('addLabel').style.display="none"
         document.getElementById('updateLabel').style.display="inline"
 
-        document.getElementById('doCreateButton').style.display="none"
+        document.getElementById('doAddButton').style.display="none"
         document.getElementById('doUpdateButton').style.display="block"
 
 
@@ -86,8 +86,8 @@
         var actor = getActorFromRow(rowElement)
         populateFormWithActor(actor)
     }
-    function doCreate(){
-        var form = document.getElementById('createUpdateForm')
+    function doAdd(){
+        var form = document.getElementById('addUpdateForm')
 
         var actor = {}
        
@@ -95,7 +95,7 @@
         actor.gender = form.querySelector('input[name="gender"]').value
         actor.dob = form.querySelector('input[name="dob"]').value
         console.log(JSON.stringify(actor))
-        createActorAjax(actor)
+        addActorAjax(actor)
         
         
     }
@@ -139,7 +139,7 @@
     }
 
     function clearForm(){
-        var form = document.getElementById('createUpdateForm')
+        var form = document.getElementById('addUpdateForm')
 
         form.querySelector('input[name="name"]').value=''
         form.querySelector('input[name="gender"]').value=''
@@ -160,7 +160,7 @@
         rowElement.cells[3].firstChild.textContent= actor.dob
     }
     function populateFormWithActor(actor){
-        var form = document.getElementById('createUpdateForm')
+        var form = document.getElementById('addUpdateForm')
         form.querySelector('input[name="id"]').disabled = true
 
         form.querySelector('input[name="id"]').value  = actor.id
@@ -170,7 +170,7 @@
         return actor
     }
     function getActorFromForm(){
-        var form = document.getElementById('createUpdateForm')
+        var form = document.getElementById('addUpdateForm')
         var actor = {}
         actor.id = form.querySelector('input[name="id"]').value
         actor.name = form.querySelector('input[name="name"]').value
@@ -198,7 +198,7 @@
         });
 
     }
-    function createActorAjax(actor){
+    function addActorAjax(actor){
         //var actor = {"name":"John Kennedy", "gender":"male","dob":1988/07/28}
         console.log(JSON.stringify(actor));
         $.ajax({
