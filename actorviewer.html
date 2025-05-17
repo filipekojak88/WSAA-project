@@ -7,7 +7,7 @@
     </head>
     <body>
         <h1>Actors</h1>
-        <div> <button id="showCreateButton" onclick="showCreate()">Create</button></div>
+        <div> <button id="showCreateButton" class="btn btn-primary mb-3" onclick="showCreate()">Create</button></div>
         <div>
             <table class="table" id="actorTable">
                 <tr>
@@ -23,18 +23,32 @@
                 
             </table>
         </div>
-        <div id='createUpdateForm' style="display: none">
-                <h2>
-                    <span id="createLabel" style="display:inline;">Create an</span>
-                    <span id="updateLabel" style="display:none;">Update</span> Actor
-                </h2>
-                <input type="hidden" name="id"/>
-                Name <input type="text" name="name"/><br/>
-                Gender <input type="text" name="gender"/> <br/>
-                DOB <input type="date" name="dob"/> <br/>
-                <span><button id="doCreateButton" onclick="doCreate()">Create</button></span>
-                <span><button id="doUpdateButton" onclick="doUpdate()">Update</button></span>
+        <div id='createUpdateForm' style="display: none" class="p-3 border rounded bg-light">
+            <h2>
+                <span id="createLabel" style="display:inline;">Create an</span>
+                <span id="updateLabel" style="display:none;">Update</span> Actor
+            </h2>
+            <input type="hidden" name="id" />
+        
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" name="name" class="form-control" id="name" />
+            </div>
+        
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <input type="text" name="gender" class="form-control" id="gender" />
+            </div>
+        
+            <div class="form-group">
+                <label for="dob">DOB</label>
+                <input type="date" name="dob" class="form-control" id="dob" />
+            </div>
+        
+            <button id="doCreateButton" class="btn btn-success mr-2" onclick="doCreate()">Create</button>
+            <button id="doUpdateButton" class="btn btn-info" onclick="doUpdate()">Update</button>
         </div>
+
     </body>
     <script>
     function showCreate(){
@@ -118,9 +132,9 @@
         var cell4 = rowElement.insertCell(3);
         cell4.innerHTML = actor.dob
         var cell5 = rowElement.insertCell(4);
-        cell5.innerHTML = '<button onclick="showUpdate(this)">Update</button>'
+        cell5.innerHTML = '<button class="btn btn-warning btn-sm" onclick="showUpdate(this)">Update</button>'
         var cell6 = rowElement.insertCell(5);
-        cell6.innerHTML = '<button onclick=doDelete(this)>delete</button>'
+        cell6.innerHTML = '<button class="btn btn-danger btn-sm" onclick="doDelete(this)">Delete</button>'
 
     }
 
