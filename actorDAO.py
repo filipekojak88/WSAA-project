@@ -35,9 +35,7 @@ class ActorDAO:
          
     def getAll(self):
         cursor = self.getcursor()
-        sql="""SELECT actor.id, actor.name, actor.gender, actor.dob, country.name 
-             FROM actor 
-             JOIN country ON actor.country_id = country.id"""
+        sql="SELECT id, name, gender, dob, country FROM actor"
         cursor.execute(sql)
         results = cursor.fetchall()
         returnArray = []        
@@ -48,10 +46,7 @@ class ActorDAO:
 
     def findByID(self, id):
         cursor = self.getcursor()
-        sql="""SELECT actor.id, actor.name, actor.gender, actor.dob, country.name 
-             FROM actor 
-             JOIN country ON actor.country_id = country.id
-             WHERE actor.id = %s"""
+        sql="SELECT id, name, gender, dob, country FROM actor WHERE id = %s"
         values = (id,)
 
         cursor.execute(sql, values)
@@ -63,8 +58,8 @@ class ActorDAO:
     def create(self, actor):
         cursor = self.getcursor()
                
-        sql="INSERT INTO actor (name, gender, dob, country_id) VALUES (%s, %s, %s, %s)"
-        values = (actor.get("name"), actor.get("gender"), actor.get("dob"), actor.get("country_id"))
+        sql="INSERT INTO actor (name, gender, dob, country) VALUES (%s, %s, %s, %s)"
+        values = (actor.get("name"), actor.get("gender"), actor.get("dob"), actor.get("country"))
         print("Actor to insert:", actor)
         print("SQL Values:", values)
         cursor.execute(sql, values)
@@ -78,9 +73,9 @@ class ActorDAO:
 
     def update(self, id, actor):
         cursor = self.getcursor()
-        sql = "UPDATE actor SET name=%s, gender=%s, dob=%s, country_id=%s WHERE id=%s"
+        sql = "UPDATE actor SET name=%s, gender=%s, dob=%s, country=%s WHERE id=%s"
         print(f"Update actor {actor}")
-        values = (actor.get("name"), actor.get("gender"), actor.get("dob"), actor.get("country_id"), id)
+        values = (actor.get("name"), actor.get("gender"), actor.get("dob"), actor.get("country"), id)
         cursor.execute(sql, values)
         self.connection.commit()
         self.closeAll()
@@ -113,15 +108,13 @@ class ActorDAO:
         self.closeAll()
         return country_list
 
-    def getCountryIdByName(self, country_name):
+    def getCountryIdByName(self):
         cursor = self.getcursor()
-        sql = "SELECT id FROM country WHERE name = %s"
-        cursor.execute(sql, (country_name,))
-        result = cursor.fetchone()
+        sql = "SELECT name FROM country ORDER BY name"
+        cursor.execute(sql)
+        results = cursor.fetchall()
+        country_list = [{"name": row[0]} for row in results]
         self.closeAll()
-        if result:
-            return result[0]
-        else:
-            return None
+        return country_list
     
 actorDAO = ActorDAO()

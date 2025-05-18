@@ -1,360 +1,238 @@
 <html>
-    <head>
-        <title>View Actors</title>
-    
-        <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-        
-        <!-- jQuery (full version to support $.ajax) -->
-        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
-    </head>
+<head>
+    <title>View Actors</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- jQuery (full version to support $.ajax) -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+</head>
 
-    <body>
+<body>
+    <div class="container mt-4">
         <h1>Actors</h1>
-        <div> <button id="showAddButton" class="btn btn-success mb-3" onclick="showAdd()">Add</button></div>
-        <div>
-            <table class="table" id="actorTable">
+        <button id="showAddButton" class="btn btn-success mb-3" onclick="showAdd()">Add Actor</button>
+
+        <table class="table table-striped" id="actorTable">
+            <thead class="thead-dark">
                 <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Gender</th>
-                        <th>Date of Birth<br><span style="font-size: 0.75em; color: gray;">(DD-MM-YYYY)</span></th>
-                        <th>Country</th>
-                        <th>Update</th>
-                        <th>Delete</th>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Gender</th>
+                    <th>Date of Birth</th>
+                    <th>Country</th>
+                    <th>Actions</th>
                 </tr>
-                
-            </table>
-        </div>
-        <div id='addUpdateForm' style="display: none" class="p-3 border rounded bg-light">
-            <h2>
-                <span id="addLabel" style="display:inline;">Add an</span>
-                <span id="updateLabel" style="display:none;">Update</span> Actor
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <div id='addUpdateForm' class="card p-3 mb-4" style="display: none">
+            <h2 class="card-title">
+                <span id="addLabel">Add an Actor</span>
+                <span id="updateLabel" style="display:none;">Update Actor</span>
             </h2>
-            <input type="hidden" name="id" />
-        
+            <input type="hidden" name="id">
+
             <div class="form-group">
                 <label for="name">Name</label>
-                <input type="text" name="name" class="form-control" id="name" />
+                <input type="text" name="name" class="form-control" required>
             </div>
-        
+
             <div class="form-group">
                 <label for="gender">Gender</label>
-                <select name="gender" class="form-control" id="gender">
+                <select name="gender" class="form-control" required>
                     <option value="">-- Select Gender --</option>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                 </select>
             </div>
-        
+
             <div class="form-group">
-                <label for="dob">Date of Birth<br><span style="font-size: 0.75em; color: gray;">(DD/MM/YYYY)</span></label>
-                <input type="date" name="dob" class="form-control" id="dob" />
+                <label for="dob">Date of Birth</label>
+                <input type="date" name="dob" class="form-control" required>
             </div>
 
             <div class="form-group">
                 <label for="country">Country</label>
-                <select name="country" class="form-control" id="countrySelect">
+                <select name="country" class="form-control" required>
                     <option value="">-- Select Country --</option>
                 </select>
             </div>
 
-            <div class="d-flex mt-3">
+            <div class="d-flex justify-content-end">
                 <button id="doAddButton" class="btn btn-success mr-2" onclick="doAdd()">Add</button>
-                <button id="doUpdateButton" class="btn btn-info" onclick="doUpdate()">Update</button>
-                <button class="btn btn-secondary ml-2" onclick="cancelForm()">Cancel</button>
+                <button id="doUpdateButton" class="btn btn-primary mr-2" onclick="doUpdate()"
+                    style="display:none">Update</button>
+                <button class="btn btn-secondary" onclick="cancelForm()">Cancel</button>
             </div>
         </div>
+    </div>
 
-    </body>
     <script>
-    function formatDate(dateStr) {
+        // Simplified functions
+        const formatDate = (dateStr) => {
+            if (!dateStr) return '';
             const date = new Date(dateStr);
-            const day = String(date.getDate()).padStart(2, '0');
-            const month = String(date.getMonth() + 1).padStart(2, '0'); // months are 0-based
-            const year = date.getFullYear();
-            return `${day}-${month}-${year}`;
-    }
-    function showAdd(){
-        document.getElementById('showAddButton').style.display="none"
-        document.getElementById('actorTable').style.display="none"
-        document.getElementById('addUpdateForm').style.display="block"
-
-        document.getElementById('addLabel').style.display="inline"
-        document.getElementById('updateLabel').style.display="none"
-
-        document.getElementById('doAddButton').style.display="block"
-        document.getElementById('doUpdateButton').style.display="none"
-
-    }
-    function showViewAll(){
-        document.getElementById('showAddButton').style.display="block"
-        document.getElementById('actorTable').style.display="table"
-        document.getElementById('addUpdateForm').style.display="none"
-    }
-    function showUpdate(buttonElement){
-        document.getElementById('showAddButton').style.display="none"
-        document.getElementById('actorTable').style.display="none"
-        document.getElementById('addUpdateForm').style.display="block"
-
-        document.getElementById('addLabel').style.display="none"
-        document.getElementById('updateLabel').style.display="inline"
-
-        document.getElementById('doAddButton').style.display="none"
-        document.getElementById('doUpdateButton').style.display="block"
-
-
-        var rowElement = buttonElement.parentNode.parentNode
-        // these is a way of finding the closest <tr> which would safer, closest()
-        
-        var actor = getActorFromRow(rowElement)
-        populateFormWithActor(actor)
-    }
-    function doAdd(){
-        var form = document.getElementById('addUpdateForm')
-
-        var actor = {}
-       
-        actor.name = form.querySelector('input[name="name"]').value
-        actor.gender = form.querySelector('select[name="gender"]').value
-        actor.dob = form.querySelector('input[name="dob"]').value
-        // Get the selected country ID from the dropdown
-        var countrySelect = form.querySelector('select[name="country"]');
-        actor.country_id = countrySelect.value;  // Send country_id instead of country name
-        console.log("Actor object to send:", JSON.stringify(actor))
-        addActorAjax(actor)
-        
-        
-    }
-    function doUpdate(){
-        var actor = getActorFromForm();
-        updateActorAjax(actor);
-    }
-    function doDelete(r){
-        if (!confirm("Are you sure you want to delete this actor?")) {
-            return; // If the user cancels, do nothing
-        }
-
-        var tableElement = document.getElementById('actorTable');
-        var rowElement = r.parentNode.parentNode;
-        var index = rowElement.rowIndex;
-        deleteActorAjax(rowElement.getAttribute("id"));
-        tableElement.deleteRow(index);
-    }
-    function addActorToTable(actor){
-        var tableElement = document.getElementById('actorTable')
-        var rowElement = tableElement.insertRow(-1)
-        rowElement.setAttribute('id',actor.id)
-        var cell1 = rowElement.insertCell(0);
-        cell1.innerHTML = actor.id
-        var cell2 = rowElement.insertCell(1);
-        cell2.innerHTML = actor.name
-        var cell3 = rowElement.insertCell(2);
-        cell3.innerHTML = actor.gender
-        var cell4 = rowElement.insertCell(3);
-        cell4.innerHTML = formatDate(actor.dob)
-        var cell5 = rowElement.insertCell(4);
-        cell5.innerHTML = countryMap[actor.country_id] || ''
-        var cell6 = rowElement.insertCell(5);
-        cell6.innerHTML = '<button class="btn btn-info btn-sm" onclick="showUpdate(this)">Update</button>'
-        var cell7 = rowElement.insertCell(6);
-        cell7.innerHTML = '<button class="btn btn-danger btn-sm" onclick="doDelete(this)">Delete</button>'
-
-    }
-
-    function clearForm(){
-        var form = document.getElementById('addUpdateForm')
-        form.querySelector('input[name="id"]').value=''
-        form.querySelector('input[name="name"]').value=''
-        form.querySelector('select[name="gender"]').value=''
-        form.querySelector('input[name="dob"]').value=''
-        form.querySelector('select[name="country"]').value=''
-    }
-    function getActorFromRow(rowElement){
-        var actor ={}
-        actor.id  = rowElement.getAttribute('id')
-        actor.name = rowElement.cells[1].firstChild.textContent.trim()
-        actor.gender = rowElement.cells[2].firstChild.textContent.trim()
-        actor.dob = rowElement.cells[3].firstChild.textContent.trim()
-        actor.country = rowElement.cells[4].firstChild.textContent.trim()
-
-        return actor
-    }
-    function setActorInRow(rowElement, actor){
-        rowElement.cells[0].firstChild.textContent= actor.id  
-        rowElement.cells[1].firstChild.textContent= actor.name
-        rowElement.cells[2].firstChild.textContent= actor.gender
-        rowElement.cells[3].firstChild.textContent= formatDate(actor.dob)
-    }
-    function populateFormWithActor(actor){
-        var form = document.getElementById('addUpdateForm')
-        form.querySelector('input[name="id"]').value = actor.id
-        form.querySelector('input[name="name"]').value = actor.name
-        form.querySelector('select[name="gender"]').value = actor.gender
-        form.querySelector('input[name="dob"]').value = actor.dob
-        // Find the option that matches the current country name
-        var countrySelect = form.querySelector('select[name="country"]');
-        for (var i = 0; i < countrySelect.options.length; i++) {
-            if (countrySelect.options[i].text === actor.country) {
-                countrySelect.value = countrySelect.options[i].value;
-                break;
-            }
-        }
-
-        return actor
-    }
-    function getActorFromForm() {
-        var form = document.getElementById('addUpdateForm');
-        var countrySelect = form.querySelector('select[name="country"]');
-
-        return {
-            id: form.querySelector('input[name="id"]').value,
-            name: form.querySelector('input[name="name"]').value,
-            gender: form.querySelector('select[name="gender"]').value,
-            dob: form.querySelector('input[name="dob"]').value,
-            country_id: countrySelect.value
+            return date.toLocaleDateString('en-GB'); // DD/MM/YYYY format
         };
-    }
-    function getAllAjax() {
-        // Clear existing rows first
-        var table = document.getElementById('actorTable');
-        // Keep header row (index 0), remove others
-        while (table.rows.length > 1) {
-            table.deleteRow(1);
-        }
 
-        $.ajax({
-            "url": "/actors",
-            "method": "GET",
-            "data": "",
-            "dataType": "JSON",
-            "success": function (result) {
-                for (actor of result) {
-                    addActorToTable(actor);
-                }
-            },
-            "error": function (xhr, status, error) {
-                console.log("Error: " + status + " msg:" + error);
-            }
-        });
-    }
-    let countryMap = {};
+        const toggleViews = (showForm, isUpdate = false) => {
+            $('#showAddButton').toggle(!showForm);
+            $('#actorTable').toggle(!showForm);
+            $('#addUpdateForm').toggle(showForm);
 
-    function loadCountries() {
-        $.ajax({
-            url: '/countries',
-            method: 'GET',
-            dataType: 'JSON',
-            success: function (result) {
-                var countrySelect = document.getElementById('countrySelect');
-                result.forEach(function (country) {
-                    countryMap[country.id] = country.name;
-                    var option = document.createElement('option');
-                    option.value = country.id;
-                    option.text = country.name;
-                    countrySelect.appendChild(option);
-                });
-            },
-            error: function (xhr, status, error) {
-                console.log("Error loading countries: " + status + " msg: " + error);
-            }
-        });
-    }
+            $('#addLabel').toggle(!isUpdate);
+            $('#updateLabel').toggle(isUpdate);
+            $('#doAddButton').toggle(!isUpdate);
+            $('#doUpdateButton').toggle(isUpdate);
+        };
 
-       
-    function updateActorAjax(actor){
-        console.log("Updating actor:", JSON.stringify(actor));
-
-        // Get the country name BEFORE the AJAX call
-        var countrySelect = document.querySelector('select[name="country"]');
-        var selectedOption = countrySelect.options[countrySelect.selectedIndex];
-        
-
-        $.ajax({
-            "url": "/actors/" + encodeURI(actor.id),
-            "method": "PUT",
-            "data": JSON.stringify({
-                name: actor.name,
-                gender: actor.gender,
-                dob: actor.dob,
-                country_id: actor.country_id
-            }),
-            "dataType": "JSON",
-            contentType: "application/json; charset=utf-8",
-            success: function (response) {
-                console.log("Update successful: ", response);
-                var rowElement = document.getElementById(response.id);
-                if (rowElement) {
-                    // Update all fields including country name
-                    rowElement.cells[0].textContent = actor.id;
-                    rowElement.cells[1].textContent = actor.name;
-                    rowElement.cells[2].textContent = actor.gender;
-                    rowElement.cells[3].textContent = formatDate(actor.dob);
-                    rowElement.cells[4].textContent = selectedOption.text; // Use the selected option text
-                }
-                clearForm();
-                showViewAll();
-            },
-            "error": function (xhr, status, error) {
-                console.log("Update error: " + status + " msg: " + error);
-            }
-        });
-    }
-    function deleteActorAjax(id){
-        
-        //console.log(JSON.stringify('deleting '+id));
-        $.ajax({
-            "url": "/actors/"+encodeURI(id),
-            "method":"DELETE",
-            "data":"",
-            "dataType": "JSON",
-            contentType: "application/json; charset=utf-8",
-            "success":function(result){
-                //console.log(result);
-                  
-            },
-            "error":function(xhr,status,error){
-                console.log("Error: " + status + " msg:" + error);
-            }
-        });
-    }
-    function cancelForm() {
+        const showAdd = () => {
             clearForm();
-            showViewAll();
-    }
+            toggleViews(true);
+        };
 
-    getAllAjax();
+        const showViewAll = () => toggleViews(false);
 
-    function addActorAjax(actor) {
-        //var actor = {"name":"John Kennedy", "gender":"male","dob":1988/07/28}
-        console.log(JSON.stringify(actor));
-        $.ajax({
-            "url": "/actors",
-            "method": "POST",
-            "data": JSON.stringify({
-                "name": actor.name,
-                "gender": actor.gender,
-                "dob": actor.dob,
-                "country_id": actor.country_id  // Explicitly maintain country_id
-            }),
-            "dataType": "JSON",
-            contentType: "application/json; charset=utf-8",
-            success: function (response) {
-                console.log("Actor added:", response);
-                addActorToTable(response);
-                clearForm();
-                showViewAll();
-            },
-            error: function (xhr, status, error) {
-                console.log("Add error:", + status + " msg: " + error);
-            }
+        const showUpdate = (button) => {
+            const row = $(button).closest('tr');
+            const actor = {
+                id: row.data('id'),
+                name: row.find('.actor-name').text(),
+                gender: row.find('.actor-gender').text(),
+                dob: row.find('.actor-dob').data('date'),
+                country: row.find('.actor-country').text()
+            };
+
+            populateForm(actor);
+            toggleViews(true, true);
+        };
+
+        const clearForm = () => {
+            $('#addUpdateForm')[0].reset();
+            $('input[name="id"]').val('');
+        };
+
+        const populateForm = (actor) => {
+            $('input[name="id"]').val(actor.id);
+            $('input[name="name"]').val(actor.name);
+            $('select[name="gender"]').val(actor.gender);
+            $('input[name="dob"]').val(actor.dob);
+
+            // Set country selection
+            const countrySelect = $('select[name="country"]');
+            countrySelect.val(actor.country);
+        };
+
+        const getFormData = () => ({
+            id: $('input[name="id"]').val(),
+            name: $('input[name="name"]').val(),
+            gender: $('select[name="gender"]').val(),
+            dob: $('input[name="dob"]').val(),
+            country: $('select[name="country"]').val()
         });
-    }
-    $(document).ready(function () {
-        getAllAjax();
-        loadCountries();
-    });
+
+        // AJAX Functions
+        const loadActors = () => {
+            $.ajax({
+                url: '/actors',
+                method: 'GET',
+                success: (actors) => {
+                    const tbody = $('#actorTable tbody').empty();
+                    actors.forEach(actor => {
+                        tbody.append(`
+                            <tr data-id="${actor.id}">
+                                <td>${actor.id}</td>
+                                <td class="actor-name">${actor.name}</td>
+                                <td class="actor-gender">${actor.gender}</td>
+                                <td class="actor-dob" data-date="${actor.dob}">${formatDate(actor.dob)}</td>
+                                <td class="actor-country">${actor.country}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary mr-1" onclick="showUpdate(this)">Update</button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteActor(${actor.id}, this)">Delete</button>
+                                </td>
+                            </tr>
+                        `);
+                    });
+                },
+                error: (xhr, status, error) => {
+                    console.error("Error loading actors:", error);
+                }
+            });
+        };
+
+        const loadCountries = () => {
+            $.ajax({
+                url: '/countries',
+                method: 'GET',
+                success: (countries) => {
+                    const select = $('select[name="country"]').empty().append('<option value="">-- Select Country --</option>');
+                    countries.forEach(country => {
+                        select.append(`<option value="${country.name}">${country.name}</option>`);
+                    });
+                },
+                error: (xhr, status, error) => {
+                    console.error("Error loading countries:", error);
+                }
+            });
+        };
+
+        const addActor = () => {
+            const actor = getFormData();
+            $.ajax({
+                url: '/actors',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(actor),
+                success: (newActor) => {
+                    loadActors();
+                    showViewAll();
+                },
+                error: (xhr, status, error) => {
+                    console.error("Error adding actor:", error);
+                }
+            });
+        };
+
+        const updateActor = () => {
+            const actor = getFormData();
+            $.ajax({
+                url: `/actors/${actor.id}`,
+                method: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(actor),
+                success: () => {
+                    loadActors();
+                    showViewAll();
+                },
+                error: (xhr, status, error) => {
+                    console.error("Error updating actor:", error);
+                }
+            });
+        };
+
+        const deleteActor = (id, button) => {
+            if (!confirm("Are you sure you want to delete this actor?")) return;
+
+            $.ajax({
+                url: `/actors/${id}`,
+                method: 'DELETE',
+                success: () => {
+                    $(button).closest('tr').remove();
+                },
+                error: (xhr, status, error) => {
+                    console.error("Error deleting actor:", error);
+                }
+            });
+        };
+
+        // Initialize
+        $(document).ready(() => {
+            loadActors();
+            loadCountries();
+        });
     </script>
-    
+</body>
+
 </html>

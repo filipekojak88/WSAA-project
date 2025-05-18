@@ -7,13 +7,6 @@ app = Flask(__name__, static_url_path='', static_folder='.')
 CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
-def get_country_id_by_name(country_name):
-    countries = actorDAO.getAllCountries()
-    for country in countries:
-        if country["name"] == country_name:
-            return country["id"]
-    return None
-
 #app = Flask(__name__)
 
 @app.route('/')
@@ -47,7 +40,7 @@ def create_actor():
         if not actor:
             return jsonify({"error": "Bad Request", "details": "Request body must be JSON"}), 400
 
-        required_fields = ['name', 'gender', 'dob', 'country_id']
+        required_fields = ['name', 'gender', 'dob', 'country']
         missing_fields = [field for field in required_fields if field not in actor]
 
         if missing_fields:
@@ -60,7 +53,7 @@ def create_actor():
             "name": actor['name'],
             "gender": actor['gender'],
             "dob": actor['dob'],
-            "country_id": actor['country_id']
+            "country": actor['country']
         }
 
         added_actor = actorDAO.create(actor_data)
@@ -90,8 +83,8 @@ def update(id):
         foundActor['gender'] = reqJson['gender']
     if 'dob' in reqJson:
         foundActor['dob'] = reqJson['dob']
-    if 'country_id' in reqJson:
-        foundActor['country_id'] = reqJson['country_id']
+    if 'country' in reqJson:
+        foundActor['country'] = reqJson['country']
 
     actorDAO.update(id,foundActor)
     updatedActor = actorDAO.findByID(id)
@@ -107,6 +100,7 @@ def delete(id):
     return jsonify({"done":True})
 
 @app.route('/countries')
+@cross_origin()
 def get_countries():    
     countries = actorDAO.getAllCountries()
     return jsonify(countries)
