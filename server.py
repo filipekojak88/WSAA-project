@@ -81,12 +81,8 @@ def update(id):
     
     if not request.json:
         abort(400)
+
     reqJson = request.json
-    if 'dob' in reqJson:
-        try:
-            dob = datetime.strptime(reqJson['dob'], "%Y-%m-%d").date()
-        except ValueError:
-            abort(400)  # Invalid date format
 
     if 'name' in reqJson:
         foundActor['name'] = reqJson['name']
@@ -98,7 +94,8 @@ def update(id):
         foundActor['country_id'] = reqJson['country_id']
 
     actorDAO.update(id,foundActor)
-    return jsonify(foundActor)
+    updatedActor = actorDAO.findByID(id)
+    return jsonify(updatedActor)
         
 
     

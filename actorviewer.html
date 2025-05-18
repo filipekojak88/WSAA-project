@@ -191,7 +191,8 @@
         rowElement.cells[1].firstChild.textContent= actor.name
         rowElement.cells[2].firstChild.textContent= actor.gender
         rowElement.cells[3].firstChild.textContent= formatDate(actor.dob)
-        rowElement.cells[4].firstChild.textContent = actor.country
+        // Use countryMap to display country name instead of ID
+        rowElement.cells[4].firstChild.textContent = countryMap[actor.country_id] || actor.country_id;
     }
     function populateFormWithActor(actor){
         var form = document.getElementById('addUpdateForm')
@@ -210,7 +211,7 @@
         actor.name = form.querySelector('input[name="name"]').value
         actor.gender = form.querySelector('select[name="gender"]').value
         actor.dob = form.querySelector('input[name="dob"]').value
-        actor.country = form.querySelector('select[name="country"]').value
+        actor.country_id = form.querySelector('select[name="country"]').value
         console.log(JSON.stringify(actor))
         return actor
     }
@@ -268,6 +269,12 @@
             contentType: "application/json; charset=utf-8",
             success: function (response) {
                 console.log("Actor updated:", response);
+                // Ensure the response includes both country_id and country name
+                if (response.country_id && !response.country) {
+                    response.country = countryMap[response.country_id];
+                }
+                var rowElement = document.getElementById(response.id);
+                setActorInRow(rowElement, response);
             },
             "error":function(xhr,status,error){
                 console.log("Update error: " + status + " msg: " + error);
