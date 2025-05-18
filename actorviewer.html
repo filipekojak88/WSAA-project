@@ -32,40 +32,43 @@
                 <span id="addLabel">Add an Actor</span>
                 <span id="updateLabel" style="display:none;">Update Actor</span>
             </h2>
-            <input type="hidden" name="id">
+            <form id="actorForm">
+                <input type="hidden" name="id">
 
-            <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" name="name" class="form-control" required>
-            </div>
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" name="name" class="form-control" required>
+                </div>
 
-            <div class="form-group">
-                <label for="gender">Gender</label>
-                <select name="gender" class="form-control" required>
-                    <option value="">-- Select Gender --</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                </select>
-            </div>
+                <div class="form-group">
+                    <label for="gender">Gender</label>
+                    <select name="gender" class="form-control" required>
+                        <option value="">-- Select Gender --</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </div>
 
-            <div class="form-group">
-                <label for="dob">Date of Birth</label>
-                <input type="date" name="dob" class="form-control" required>
-            </div>
+                <div class="form-group">
+                    <label for="dob">Date of Birth</label>
+                    <input type="date" name="dob" class="form-control" required>
+                </div>
 
-            <div class="form-group">
-                <label for="country">Country</label>
-                <select name="country" class="form-control" required>
-                    <option value="">-- Select Country --</option>
-                </select>
-            </div>
+                <div class="form-group">
+                    <label for="country">Country</label>
+                    <select name="country" class="form-control" required>
+                        <option value="">-- Select Country --</option>
+                    </select>
+                </div>
 
-            <div class="d-flex justify-content-end">
-                <button id="doAddButton" class="btn btn-success mr-2" onclick="doAdd()">Add</button>
-                <button id="doUpdateButton" class="btn btn-primary mr-2" onclick="doUpdate()"
-                    style="display:none">Update</button>
-                <button class="btn btn-secondary" onclick="cancelForm()">Cancel</button>
-            </div>
+                <div class="d-flex justify-content-end">
+                    <button id="doAddButton" type="button" class="btn btn-success mr-2"
+                        onclick="doAdd(event)">Add</button>
+                    <button id="doUpdateButton" type="button" class="btn btn-primary mr-2" onclick="doUpdate(event)"
+                        style="display:none">Update</button>
+                    <button type="button" class="btn btn-secondary" onclick="cancelForm()">Cancel</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -117,7 +120,7 @@
 
         // Form handling
         const clearForm = () => {
-            $('#addUpdateForm')[0].reset();
+            $('#actorForm')[0].reset();
             $('input[name="id"]').val('');
         };
 
@@ -182,7 +185,8 @@
             });
         };
 
-        const doAdd = () => {
+        const doAdd = (e) => {
+            e.preventDefault();
             const actor = getFormData();
             $.ajax({
                 url: '/actors',
@@ -199,7 +203,8 @@
             });
         };
 
-        const doUpdate = () => {
+        const doUpdate = (e) => {
+            e.preventDefault();
             const actor = getFormData();
             $.ajax({
                 url: `/actors/${actor.id}`,
