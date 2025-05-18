@@ -50,11 +50,15 @@ def create_actor():
                 "details": f"Missing fields: {', '.join(missing_fields)}"
             }), 400
 
+        country_id = get_country_id_by_name(actor['country'])
+        if not country_id:
+            return jsonify({"error": "Invalid country name"}), 400
+
         actor_data = {
             "name": actor['name'],
             "gender": actor['gender'],
             "dob": actor['dob'],
-            "country": actor['country']
+            "country_id": country_id
         }
 
         added_actor = actorDAO.create(actor_data)
@@ -88,6 +92,12 @@ def update(id):
         foundActor['gender'] = reqJson['gender']
     if 'dob' in reqJson:
         foundActor['dob'] = reqJson['dob']
+    if 'country' in reqJson:
+        country_id = get_country_id_by_name(reqJson['country'])
+        if not country_id:
+            return jsonify({"error": "Invalid country name"}), 400
+        foundActor['country_id'] = country_id
+
     actorDAO.update(id,foundActor)
     return jsonify(foundActor)
         
@@ -106,6 +116,12 @@ def get_countries():
     countries = actorDAO.getAllCountries()
     return jsonify(countries)
 
+def get_country_id_by_name(country_name):
+    countries = actorDAO.getAllCountries()
+    for country in countries:
+        if country["name"].lower() == country_name.lower():
+            return country["id"]
+    return None
 
 if __name__ == '__main__' :
     app.run(debug= True)

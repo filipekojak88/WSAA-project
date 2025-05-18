@@ -37,7 +37,7 @@ class ActorDAO:
         cursor = self.getcursor()
         sql="""SELECT actor.id, actor.name, actor.gender, actor.dob, country.name 
              FROM actor 
-             JOIN country ON actor.country = country.name"""
+             JOIN country ON actor.country_id = country.id"""
         cursor.execute(sql)
         results = cursor.fetchall()
         returnArray = []        
@@ -50,7 +50,7 @@ class ActorDAO:
         cursor = self.getcursor()
         sql="""SELECT actor.id, actor.name, actor.gender, actor.dob, country.name 
              FROM actor 
-             JOIN country ON actor.country = country.name
+             JOIN country ON actor.country_id = country.id
              WHERE actor.id = %s"""
         values = (id,)
 
@@ -63,8 +63,8 @@ class ActorDAO:
     def create(self, actor):
         cursor = self.getcursor()
                
-        sql="INSERT INTO actor (name, gender, dob, country) VALUES (%s, %s, %s, %s)"
-        values = (actor.get("name"), actor.get("gender"), actor.get("dob"), actor.get("country"))
+        sql="INSERT INTO actor (name, gender, dob, country_id) VALUES (%s, %s, %s, %s)"
+        values = (actor.get("name"), actor.get("gender"), actor.get("dob"), actor.get("country_id"))
         print("Actor to insert:", actor)
         print("SQL Values:", values)
         cursor.execute(sql, values)
@@ -78,9 +78,9 @@ class ActorDAO:
 
     def update(self, id, actor):
         cursor = self.getcursor()
-        sql = "UPDATE actor SET name=%s, gender=%s, dob=%s, country=%s WHERE id=%s"
+        sql = "UPDATE actor SET name=%s, gender=%s, dob=%s, country_id=%s WHERE id=%s"
         print(f"Update actor {actor}")
-        values = (actor.get("name"), actor.get("gender"), actor.get("dob"), actor.get("country"), id)
+        values = (actor.get("name"), actor.get("gender"), actor.get("dob"), actor.get("country_id"), id)
         cursor.execute(sql, values)
         self.connection.commit()
         self.closeAll()
