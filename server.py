@@ -41,7 +41,7 @@ def create_actor():
         if not actor:
             return jsonify({"error": "Bad Request", "details": "Request body must be JSON"}), 400
 
-        required_fields = ['name', 'gender', 'dob', 'country_id']
+        required_fields = ['name', 'gender', 'dob', 'country']
         missing_fields = [field for field in required_fields if field not in actor]
 
         if missing_fields:

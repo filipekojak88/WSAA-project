@@ -62,15 +62,9 @@ class ActorDAO:
 
     def create(self, actor):
         cursor = self.getcursor()
-
-        try:
-            country_id = int(actor.get("country"))  # Ensure it's an integer
-        except (ValueError, TypeError):
-            self.closeAll()
-            raise ValueError("Invalid country ID provided.")
-        
-        sql="INSERT INTO actor (name, gender, dob, country_id) VALUES (%s, %s, %s, %s)"
-        values = (actor.get("name"), actor.get("gender"), actor.get("dob"), country_id)
+               
+        sql="INSERT INTO actor (name, gender, dob, country) VALUES (%s, %s, %s, %s)"
+        values = (actor.get("name"), actor.get("gender"), actor.get("dob"), actor.get("country"))
         print("Actor to insert:", actor)
         print("SQL Values:", values)
         cursor.execute(sql, values)
@@ -84,9 +78,9 @@ class ActorDAO:
 
     def update(self, id, actor):
         cursor = self.getcursor()
-        sql = "UPDATE actor SET name=%s, gender=%s, dob=%s, country_id=%s WHERE id=%s"
+        sql = "UPDATE actor SET name=%s, gender=%s, dob=%s, country=%s WHERE id=%s"
         print(f"Update actor {actor}")
-        values = (actor.get("name"), actor.get("gender"), actor.get("dob"), actor.get("country_id"), id)
+        values = (actor.get("name"), actor.get("gender"), actor.get("dob"), actor.get("country"), id)
         cursor.execute(sql, values)
         self.connection.commit()
         self.closeAll()
