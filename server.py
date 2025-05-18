@@ -34,6 +34,12 @@ def findById(id):
 #curl  -i -H "Content-Type:application/json" -X POST -d "{\"name\":\"hello\",\"gender\":\"someone\",\"dob\":1988/07/28}" http://127.0.0.1:5000/actors
 @app.route('/actors', methods=['POST'])
 @cross_origin()
+def get_country_id_by_name(country_name):
+    countries = actorDAO.getAllCountries()
+    for country in countries:
+        if country["name"].lower() == country_name.lower():
+            return country["id"]
+    return None
 def create_actor():
     try:
         actor = request.get_json()
@@ -110,18 +116,6 @@ def delete(id):
     actorDAO.delete(id)
     return jsonify({"done":True})
 
-@app.route('/countries')
-def get_countries():
-    from actorDAO import actorDAO
-    countries = actorDAO.getAllCountries()
-    return jsonify(countries)
-
-def get_country_id_by_name(country_name):
-    countries = actorDAO.getAllCountries()
-    for country in countries:
-        if country["name"].lower() == country_name.lower():
-            return country["id"]
-    return None
 
 if __name__ == '__main__' :
     app.run(debug= True)
