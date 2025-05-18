@@ -54,7 +54,7 @@ def create_actor():
             "name": actor['name'],
             "gender": actor['gender'],
             "dob": actor['dob'],
-            "country": actor['country_id']
+            "country": actor['country']
         }
 
         added_actor = actorDAO.create(actor_data)
