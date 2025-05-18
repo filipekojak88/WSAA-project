@@ -129,10 +129,7 @@
     }
     function doUpdate(){
         var actor = getActorFromForm();
-        var rowElement = document.getElementById(actor.id);
         updateActorAjax(actor);
-        setActorInRow(rowElement,actor);
-       
         clearForm();
         showViewAll();
     }
@@ -192,7 +189,7 @@
         rowElement.cells[2].firstChild.textContent= actor.gender
         rowElement.cells[3].firstChild.textContent= formatDate(actor.dob)
         // Use countryMap to display country name instead of ID
-        rowElement.cells[4].firstChild.textContent = countryMap[actor.country_id] || actor.country_id;
+        rowElement.cells[4].textContent = actor.country || countryMap[actor.country_id] || actor.country_id
     }
     function populateFormWithActor(actor){
         var form = document.getElementById('addUpdateForm')
@@ -260,22 +257,28 @@
        
     function updateActorAjax(actor){
         //var actor = {"name":"John Kennedy", "gender":"male","dob":1988/07/28}
-        console.log(JSON.stringify(actor));
+        console.log("Updating actor:", JSON.stringify(actor));
         $.ajax({
             "url": "/actors/"+encodeURI(actor.id),
             "method":"PUT",            
-            "data":JSON.stringify(actor),
+            "data":JSON.stringify({
+                name: actor.name,
+                gender: actor.gender,
+                dob: actor.dob,
+                country_id: actor.country_id
+            }),
             "dataType": "JSON",
             contentType: "application/json; charset=utf-8",
             success: function (response) {
-                console.log("Actor updated:", response);
-                // Ensure the response includes both country_id and country name
-                if (response.country_id && !response.country) {
-                    response.country = countryMap[response.country_id];
-                }
+                console.log("Update successful: ", response);
+                // Find the existing row and update it
                 var rowElement = document.getElementById(response.id);
-                setActorInRow(rowElement, response);
-            },
+                if (rowElement) {
+                    // Convert country_id to name for display
+                    response.country = countryMap[response.country_id] || response.country_id;
+                    setActorInRow(rowElement, response);
+                }
+            },    
             "error":function(xhr,status,error){
                 console.log("Update error: " + status + " msg: " + error);
             }
