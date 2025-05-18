@@ -119,7 +119,9 @@
         actor.name = form.querySelector('input[name="name"]').value
         actor.gender = form.querySelector('select[name="gender"]').value
         actor.dob = form.querySelector('input[name="dob"]').value
-        actor.country = form.querySelector('select[name="country"]').value
+        // Get the selected country ID from the dropdown
+        var countrySelect = form.querySelector('select[name="country"]');
+        actor.country_id = countrySelect.value;  // Send country_id instead of country name
         console.log("Actor object to send:", JSON.stringify(actor))
         addActorAjax(actor)
         
@@ -158,7 +160,7 @@
         var cell4 = rowElement.insertCell(3);
         cell4.innerHTML = formatDate(actor.dob)
         var cell5 = rowElement.insertCell(4);
-        cell5.innerHTML = countryMap[actor.country] || actor.country
+        cell5.innerHTML = countryMap[actor.country_id] || ''
         var cell6 = rowElement.insertCell(5);
         cell6.innerHTML = '<button class="btn btn-info btn-sm" onclick="showUpdate(this)">Update</button>'
         var cell7 = rowElement.insertCell(6);
