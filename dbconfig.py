@@ -1,3 +1,5 @@
+# This is a database configuration file for a MySQL database and TMDB API.
+
 mysql = {
     'host':"filipekojak88.mysql.pythonanywhere-services.com",
     'user':"filipekojak88",
