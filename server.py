@@ -10,7 +10,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 def get_country_id_by_name(country_name):
     countries = actorDAO.getAllCountries()
     for country in countries:
-        if country["name"].lower() == country_name.lower():
+        if country["name"] == country_name:
             return country["id"]
     return None
 
