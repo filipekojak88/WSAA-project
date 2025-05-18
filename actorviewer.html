@@ -130,8 +130,6 @@
     function doUpdate(){
         var actor = getActorFromForm();
         updateActorAjax(actor);
-        clearForm();
-        showViewAll();
     }
     function doDelete(r){
         if (!confirm("Are you sure you want to delete this actor?")) {
@@ -211,30 +209,28 @@
             country_id: countrySelect.value
         };
     }
-    function getAllAjax(){
-        // Clear existing rows (except header)
+    function getAllAjax() {
+        // Clear existing rows first
         var table = document.getElementById('actorTable');
+        // Keep header row (index 0), remove others
         while (table.rows.length > 1) {
             table.deleteRow(1);
         }
-        
+
         $.ajax({
             "url": "/actors",
-            "method":"GET",
-            "data":"",
+            "method": "GET",
+            "data": "",
             "dataType": "JSON",
-            "success":function(result){
-                //console.log(result);
-                for (actor of result){
+            "success": function (result) {
+                for (actor of result) {
                     addActorToTable(actor);
                 }
-                
             },
-            "error":function(xhr,status,error){
+            "error": function (xhr, status, error) {
                 console.log("Error: " + status + " msg:" + error);
             }
         });
-
     }
     let countryMap = {};
 
@@ -261,12 +257,17 @@
 
        
     function updateActorAjax(actor){
-        //var actor = {"name":"John Kennedy", "gender":"male","dob":1988/07/28}
         console.log("Updating actor:", JSON.stringify(actor));
+
+        // Get the country name BEFORE the AJAX call
+        var countrySelect = document.querySelector('select[name="country"]');
+        var selectedOption = countrySelect.options[countrySelect.selectedIndex];
+        var countryName = selectedOption.text;
+
         $.ajax({
-            "url": "/actors/"+encodeURI(actor.id),
-            "method":"PUT",            
-            "data":JSON.stringify({
+            "url": "/actors/" + encodeURI(actor.id),
+            "method": "PUT",
+            "data": JSON.stringify({
                 name: actor.name,
                 gender: actor.gender,
                 dob: actor.dob,
@@ -276,24 +277,17 @@
             contentType: "application/json; charset=utf-8",
             success: function (response) {
                 console.log("Update successful: ", response);
-                // Find the existing row and update it
                 var rowElement = document.getElementById(response.id);
                 if (rowElement) {
-                    // Get the selected country name from the dropdown
-                    var countrySelect = document.querySelector('select[name="country"]');
-                    var selectedOption = countrySelect.options[countrySelect.selectedIndex];
-                    var countryName = selectedOption.text;
-
-                    // Update the row with the new country name
-                    rowElement.cells[4].textContent = countryName;
-
-                    // Update other fields
+                    // Update all fields including country name
+                    rowElement.cells[0].textContent = actor.id;
                     rowElement.cells[1].textContent = actor.name;
                     rowElement.cells[2].textContent = actor.gender;
                     rowElement.cells[3].textContent = formatDate(actor.dob);
+                    rowElement.cells[4].textContent = countryName; // Use the pre-fetched name
                 }
-            },    
-            "error":function(xhr,status,error){
+            },
+            "error": function (xhr, status, error) {
                 console.log("Update error: " + status + " msg: " + error);
             }
         });
