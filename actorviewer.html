@@ -90,7 +90,7 @@
     }
     function showViewAll(){
         document.getElementById('showAddButton').style.display="block"
-        document.getElementById('actorTable').style.display="block"
+        document.getElementById('actorTable').style.display="table"
         document.getElementById('addUpdateForm').style.display="none"
     }
     function showUpdate(buttonElement){
@@ -213,6 +213,12 @@
         return actor
     }
     function getAllAjax(){
+        // Clear existing rows (except header)
+        var table = document.getElementById('actorTable');
+        while (table.rows.length > 1) {
+            table.deleteRow(1);
+        }
+        
         $.ajax({
             "url": "/actors",
             "method":"GET",
