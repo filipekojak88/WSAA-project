@@ -37,7 +37,7 @@ class ActorDAO:
         cursor = self.getcursor()
         sql="""SELECT actor.id, actor.name, actor.gender, actor.dob, country.name 
              FROM actor 
-             JOIN country ON actor.country_id = country.id"""
+             JOIN country ON actor.country = country.name"""
         cursor.execute(sql)
         results = cursor.fetchall()
         returnArray = []        
@@ -50,7 +50,7 @@ class ActorDAO:
         cursor = self.getcursor()
         sql="""SELECT actor.id, actor.name, actor.gender, actor.dob, country.name 
              FROM actor 
-             JOIN country ON actor.country_id = country.id
+             JOIN country ON actor.country = country.name
              WHERE actor.id = %s"""
         values = (id,)
 
