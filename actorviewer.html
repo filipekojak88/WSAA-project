@@ -176,11 +176,13 @@
     }
     function getActorFromRow(rowElement){
         var actor ={}
+        var reverseCountryMap = {}; // name to id
+
         actor.id  = rowElement.getAttribute('id')
         actor.name = rowElement.cells[1].firstChild.textContent.trim()
         actor.gender = rowElement.cells[2].firstChild.textContent.trim()
         actor.dob = rowElement.cells[3].firstChild.textContent.trim()
-        actor.country = rowElement.cells[4].firstChild.textContent.trim()
+        actor.country = reverseCountryMap[rowElement.cells[4].textContent.trim()]
 
         return actor
     }
@@ -242,6 +244,7 @@
                 var countrySelect = document.getElementById('countrySelect');
                 result.forEach(function (country) {
                     countryMap[country.id] = country.name;
+                    reverseCountryMap[country.name] = country.id;
                     var option = document.createElement('option');
                     option.value = country.id;
                     option.text = country.name;
