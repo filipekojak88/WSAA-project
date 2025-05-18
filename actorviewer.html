@@ -305,7 +305,12 @@
         $.ajax({
             "url": "/actors",
             "method": "POST",
-            "data": JSON.stringify(actor),
+            "data": JSON.stringify({
+                "name": actor.name,
+                "gender": actor.gender,
+                "dob": actor.dob,
+                "country_id": actor.country_id  // Explicitly maintain country_id
+            }),
             "dataType": "JSON",
             contentType: "application/json; charset=utf-8",
             success: function (response) {
