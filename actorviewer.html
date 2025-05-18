@@ -76,6 +76,29 @@
                 </div>
             </form>
         </div>
+        <div class="card p-3 mb-4">
+            <h2>Search TMDB Actors</h2>
+            <div class="input-group mb-3">
+                <input type="text" id="tmdbSearchQuery" class="form-control" placeholder="Search for actors...">
+                <div class="input-group-append">
+                    <button class="btn btn-primary" onclick="searchTmdb()">Search</button>
+                </div>
+            </div>
+        
+            <div id="tmdbResults" style="display: none;">
+                <h4>Search Results</h4>
+                <table class="table table-striped" id="tmdbResultsTable">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Name</th>
+                            <th>Known For</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -241,7 +264,82 @@
                 }
             });
         };
+    
+        // TMDB Integration Functions
+        const searchTmdb = () => {
+            const query = $('#tmdbSearchQuery').val().trim();
+            if (!query) return;
 
+            $.ajax({
+                url: `/tmdb/search/${encodeURIComponent(query)}`,
+                method: 'GET',
+                success: (data) => {
+                    const results = data.results || [];
+                    const tbody = $('#tmdbResultsTable tbody').empty();
+
+                    results.forEach(actor => {
+                        const knownFor = actor.known_for.map(item => item.title || item.name).join(', ');
+                        tbody.append(`
+                            <tr>
+                                <td>${actor.name}</td>
+                                <td>${knownFor}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-info mr-1" 
+                                        onclick="viewTmdbActorDetails(${actor.id})">Details</button>
+                                    <button class="btn btn-sm btn-success" 
+                                        onclick="importTmdbActor(${actor.id})">Import</button>
+                                </td>
+                            </tr>
+                        `);
+                    });
+
+                    $('#tmdbResults').show();
+                },
+                error: (xhr, status, error) => {
+                    console.error("Error searching TMDB:", error);
+                    alert("Error searching TMDB. See console for details.");
+                }
+            });
+        };
+
+        const viewTmdbActorDetails = (actorId) => {
+            $.ajax({
+                url: `/tmdb/actor/${actorId}`,
+                method: 'GET',
+                success: (actor) => {
+                    // Display actor details in a modal or alert
+                    const details = `
+                        Name: ${actor.name}
+                        Birth Date: ${actor.birthday || 'Unknown'}
+                        Place of Birth: ${actor.place_of_birth || 'Unknown'}
+                        Biography: ${actor.biography || 'No biography available'}
+                    `;
+                    alert(details);
+                },
+                error: (xhr, status, error) => {
+                    console.error("Error getting actor details:", error);
+                    alert("Error getting actor details. See console for details.");
+                }
+            });
+        };
+
+        const importTmdbActor = (actorId) => {
+            if (!confirm("Import this actor to your database?")) return;
+
+            $.ajax({
+                url: `/tmdb/import/${actorId}`,
+                method: 'POST',
+                success: (actor) => {
+                    alert(`Successfully imported ${actor.name}`);
+                    loadActors(); // Refresh your actor list
+                },
+                error: (xhr, status, error) => {
+                    console.error("Error importing actor:", error);
+                    alert("Error importing actor. See console for details.");
+                }
+            });
+        };
+        
         // Initialize
         $(document).ready(() => {
             loadActors();
