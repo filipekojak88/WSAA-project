@@ -47,7 +47,7 @@ def create_actor():
         if not actor:
             return jsonify({"error": "Bad Request", "details": "Request body must be JSON"}), 400
 
-        required_fields = ['name', 'gender', 'dob', 'country']
+        required_fields = ['name', 'gender', 'dob', 'country_id']
         missing_fields = [field for field in required_fields if field not in actor]
 
         if missing_fields:
@@ -55,16 +55,12 @@ def create_actor():
                 "error": "Bad Request",
                 "details": f"Missing fields: {', '.join(missing_fields)}"
             }), 400
-        country_name = actor.get("country")
-        country_id = get_country_id_by_name(country_name)
-        if not country_id:
-            return jsonify({"error": "Invalid country name"}), 400
-
+        
         actor_data = {
             "name": actor['name'],
             "gender": actor['gender'],
             "dob": actor['dob'],
-            "country_id": country_id
+            "country_id": actor['country_id']
         }
 
         added_actor = actorDAO.create(actor_data)
@@ -98,11 +94,8 @@ def update(id):
         foundActor['gender'] = reqJson['gender']
     if 'dob' in reqJson:
         foundActor['dob'] = reqJson['dob']
-    if 'country' in reqJson:
-        country_id = get_country_id_by_name(reqJson['country'])
-        if not country_id:
-            return jsonify({"error": "Invalid country name"}), 400
-        foundActor['country_id'] = country_id
+    if 'country_id' in reqJson:
+        foundActor['country_id'] = reqJson['country_id']
 
     actorDAO.update(id,foundActor)
     return jsonify(foundActor)
