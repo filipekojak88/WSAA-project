@@ -193,7 +193,14 @@
         form.querySelector('input[name="name"]').value = actor.name
         form.querySelector('select[name="gender"]').value = actor.gender
         form.querySelector('input[name="dob"]').value = actor.dob
-        form.querySelector('select[name="country"]').value = actor.country
+        // Find the option that matches the current country name
+        var countrySelect = form.querySelector('select[name="country"]');
+        for (var i = 0; i < countrySelect.options.length; i++) {
+            if (countrySelect.options[i].text === actor.country) {
+                countrySelect.value = countrySelect.options[i].value;
+                break;
+            }
+        }
 
         return actor
     }
@@ -262,7 +269,7 @@
         // Get the country name BEFORE the AJAX call
         var countrySelect = document.querySelector('select[name="country"]');
         var selectedOption = countrySelect.options[countrySelect.selectedIndex];
-        var countryName = selectedOption.text;
+        
 
         $.ajax({
             "url": "/actors/" + encodeURI(actor.id),
@@ -284,8 +291,10 @@
                     rowElement.cells[1].textContent = actor.name;
                     rowElement.cells[2].textContent = actor.gender;
                     rowElement.cells[3].textContent = formatDate(actor.dob);
-                    rowElement.cells[4].textContent = countryName; // Use the pre-fetched name
+                    rowElement.cells[4].textContent = selectedOption.text; // Use the selected option text
                 }
+                clearForm();
+                showViewAll();
             },
             "error": function (xhr, status, error) {
                 console.log("Update error: " + status + " msg: " + error);
