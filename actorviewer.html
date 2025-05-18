@@ -188,8 +188,6 @@
         rowElement.cells[1].firstChild.textContent= actor.name
         rowElement.cells[2].firstChild.textContent= actor.gender
         rowElement.cells[3].firstChild.textContent= formatDate(actor.dob)
-        // Use countryMap to display country name instead of ID
-        rowElement.cells[4].textContent = actor.country || countryMap[actor.country_id] || actor.country_id
     }
     function populateFormWithActor(actor){
         var form = document.getElementById('addUpdateForm')
@@ -201,16 +199,17 @@
 
         return actor
     }
-    function getActorFromForm(){
-        var form = document.getElementById('addUpdateForm')
-        var actor = {}
-        actor.id = form.querySelector('input[name="id"]').value
-        actor.name = form.querySelector('input[name="name"]').value
-        actor.gender = form.querySelector('select[name="gender"]').value
-        actor.dob = form.querySelector('input[name="dob"]').value
-        actor.country_id = form.querySelector('select[name="country"]').value
-        console.log(JSON.stringify(actor))
-        return actor
+    function getActorFromForm() {
+        var form = document.getElementById('addUpdateForm');
+        var countrySelect = form.querySelector('select[name="country"]');
+
+        return {
+            id: form.querySelector('input[name="id"]').value,
+            name: form.querySelector('input[name="name"]').value,
+            gender: form.querySelector('select[name="gender"]').value,
+            dob: form.querySelector('input[name="dob"]').value,
+            country_id: countrySelect.value
+        };
     }
     function getAllAjax(){
         // Clear existing rows (except header)
@@ -280,9 +279,18 @@
                 // Find the existing row and update it
                 var rowElement = document.getElementById(response.id);
                 if (rowElement) {
-                    // Convert country_id to name for display
-                    response.country = countryMap[response.country_id] || response.country_id;
-                    setActorInRow(rowElement, response);
+                    // Get the selected country name from the dropdown
+                    var countrySelect = document.querySelector('select[name="country"]');
+                    var selectedOption = countrySelect.options[countrySelect.selectedIndex];
+                    var countryName = selectedOption.text;
+
+                    // Update the row with the new country name
+                    rowElement.cells[4].textContent = countryName;
+
+                    // Update other fields
+                    rowElement.cells[1].textContent = actor.name;
+                    rowElement.cells[2].textContent = actor.gender;
+                    rowElement.cells[3].textContent = formatDate(actor.dob);
                 }
             },    
             "error":function(xhr,status,error){
