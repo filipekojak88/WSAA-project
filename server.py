@@ -7,6 +7,12 @@ app = Flask(__name__, static_url_path='', static_folder='.')
 CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
+def get_country_id_by_name(country_name):
+    countries = actorDAO.getAllCountries()
+    for country in countries:
+        if country["name"].lower() == country_name.lower():
+            return country["id"]
+    return None
 
 #app = Flask(__name__)
 
@@ -34,12 +40,6 @@ def findById(id):
 #curl  -i -H "Content-Type:application/json" -X POST -d "{\"name\":\"hello\",\"gender\":\"someone\",\"dob\":1988/07/28}" http://127.0.0.1:5000/actors
 @app.route('/actors', methods=['POST'])
 @cross_origin()
-def get_country_id_by_name(country_name):
-    countries = actorDAO.getAllCountries()
-    for country in countries:
-        if country["name"].lower() == country_name.lower():
-            return country["id"]
-    return None
 def create_actor():
     try:
         actor = request.get_json()
