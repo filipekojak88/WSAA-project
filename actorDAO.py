@@ -113,5 +113,15 @@ class ActorDAO:
         self.closeAll()
         return country_list
 
-        
+    def getCountryIdByName(self, country_name):
+        cursor = self.getcursor()
+        sql = "SELECT id FROM country WHERE name = %s"
+        cursor.execute(sql, (country_name,))
+        result = cursor.fetchone()
+        self.closeAll()
+        if result:
+            return result[0]
+        else:
+            return None
+    
 actorDAO = ActorDAO()

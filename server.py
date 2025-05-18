@@ -49,8 +49,8 @@ def create_actor():
                 "error": "Bad Request",
                 "details": f"Missing fields: {', '.join(missing_fields)}"
             }), 400
-
-        country_id = get_country_id_by_name(actor['country'])
+        country_name = actor.get("country")
+        country_id = get_country_id_by_name(country_name)
         if not country_id:
             return jsonify({"error": "Invalid country name"}), 400
 
