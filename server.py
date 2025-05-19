@@ -2,7 +2,9 @@ from flask import Flask, jsonify, request, abort
 from flask_cors import CORS, cross_origin
 from actorDAO import actorDAO
 from datetime import datetime
-from tmdb_service import TMDBService
+from tmdb_service import TMDBService 
+import requests
+import dbconfig as cfg
 
 
 app = Flask(__name__, static_url_path='', static_folder='.')

@@ -1,12 +1,12 @@
 import requests
-from dbconfig import tmdb
+import dbconfig as cfg
 
 class TMDBService:
     @staticmethod
     def search_actors(query):
-        url = f"{tmdb['base_url']}/search/person"
+        url = f"{cfg.tmdb['base_url']}/search/person"
         headers = {
-            "Authorization": f"Bearer {tmdb['bearer_token']}",
+            "Authorization": f"Bearer {cfg.tmdb['bearer_token']}",
             "accept": "application/json"
         }
         params = {
@@ -22,9 +22,9 @@ class TMDBService:
 
     @staticmethod
     def get_actor_details(actor_id):
-        url = f"{tmdb['base_url']}/person/{actor_id}"
+        url = f"{cfg.tmdb['base_url']}/person/{actor_id}"
         headers = {
-            "Authorization": f"Bearer {tmdb['bearer_token']}",
+            "Authorization": f"Bearer {cfg.tmdb['bearer_token']}",
             "accept": "application/json"
         }
         params = {
