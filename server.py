@@ -107,34 +107,6 @@ def get_countries():
     countries = actorDAO.getAllCountries()
     return jsonify(countries)
 
-
-@app.route('/tmdb/search/<name>')
-@cross_origin()
-def search_tmdb(name):
-    try:
-        url = f"https://api.themoviedb.org/3/search/person?query={name}"
-        headers = {
-            "Authorization": f"Bearer {cfg.tmdb_bearer_token}",
-            "Content-Type": "application/json"
-        }
-        response = requests.get(url, headers=headers)
-        data = response.json()
-        
-        # Process data (same as before)
-        actors = []
-        for person in data.get("results", []):
-            actors.append({
-                "name": person.get("name"),
-                "gender": "Male" if person.get("gender") == 2 else "Female",
-                "dob": person.get("birthday", ""),
-                "country": person.get("place_of_birth", "").split(",")[-1].strip() 
-                         if person.get("place_of_birth") else "Unknown"
-            })
-        return jsonify(actors)
-    
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
 @app.route('/tmdb/search/<string:query>')
 @cross_origin()
 def search_tmdb(query):
