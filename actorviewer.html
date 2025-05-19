@@ -307,14 +307,14 @@
                 url: `/tmdb/actor/${actorId}`,
                 method: 'GET',
                 success: (actor) => {
-                    // Display actor details in a modal or alert
                     const details = `
-                    Name: ${actor.name}
-                    Birth Date: ${actor.birthday || 'Unknown'}
-                    Place of Birth: ${actor.place_of_birth || 'Unknown'}
-                    Biography: ${actor.biography || 'No biography available'}
-                    `.trim();
-                    alert(details);
+                        <p><strong>Name:</strong> ${actor.name}</p>
+                        <p><strong>Birth Date:</strong> ${actor.birthday || 'Unknown'}</p>
+                        <p><strong>Place of Birth:</strong> ${actor.place_of_birth || 'Unknown'}</p>
+                        <p><strong>Biography:</strong><br>${actor.biography || 'No biography available'}</p>
+                    `;
+                    $('#actorDetails').html(details);
+                    $('#actorModal').modal('show'); // Show modal
                 },
                 error: (xhr, status, error) => {
                     console.error("Error getting actor details:", error);
@@ -346,6 +346,24 @@
             loadCountries();
         });
     </script>
+    <div class="modal fade" id="actorModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Actor Details</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="actorDetails">
+                    <!-- Content will be inserted here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
