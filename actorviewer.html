@@ -313,7 +313,7 @@
                     Birth Date: ${actor.birthday || 'Unknown'}
                     Place of Birth: ${actor.place_of_birth || 'Unknown'}
                     Biography: ${actor.biography || 'No biography available'}
-                    `;
+                    `.trim();
                     alert(details);
                 },
                 error: (xhr, status, error) => {
