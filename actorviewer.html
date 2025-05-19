@@ -309,10 +309,10 @@
                 success: (actor) => {
                     // Display actor details in a modal or alert
                     const details = `
-                        Name: ${actor.name}
-                        Birth Date: ${actor.birthday || 'Unknown'}
-                        Place of Birth: ${actor.place_of_birth || 'Unknown'}
-                        Biography: ${actor.biography || 'No biography available'}
+                    Name: ${actor.name}
+                    Birth Date: ${actor.birthday || 'Unknown'}
+                    Place of Birth: ${actor.place_of_birth || 'Unknown'}
+                    Biography: ${actor.biography || 'No biography available'}
                     `;
                     alert(details);
                 },
@@ -339,7 +339,7 @@
                 }
             });
         };
-        
+
         // Initialize
         $(document).ready(() => {
             loadActors();
