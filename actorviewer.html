@@ -329,7 +329,10 @@
                 success: (actor) => {
                     const details = `
                         <p><strong>Name:</strong> ${actor.name}</p>
-                        <p><strong>Date of Birth <small class="text-muted">(DD/MM/YYYY)</small></strong>(${formatDate(actor.birthday) || 'Unknown'})</p>
+                        <p>
+                            <strong>Date of Birth: </strong>${formatDate(actor.birthday) || 'Unknown'}<br>
+                            <small class="text-muted">(DD/MM/YYYY)</small>
+                        </p>
                         <p><strong>Place of Birth:</strong> ${actor.place_of_birth || 'Unknown'}</p>
                         <p><strong>Biography:</strong><br>${actor.biography || 'No biography available'}</p>
                     `;
