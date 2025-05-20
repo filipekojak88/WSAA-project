@@ -1,15 +1,28 @@
-blinker==1.9.0
-certifi==2025.4.26
-charset-normalizer==3.4.2
-click==8.2.0
-Flask==3.1.1
-flask-cors==5.0.1
-idna==3.10
-itsdangerous==2.2.0
-Jinja2==3.1.6
-MarkupSafe==3.0.2
-mysql-connector==2.2.9
-mysql-connector-python==9.3.0
-requests==2.32.3
-urllib3==2.4.0
-Werkzeug==3.1.3
+# Title: Project Requirements
+# Description: This file contains the list of dependencies which are required to run the Actor Management API project.
+# Install using: pip install -r requirements.txt
+
+# Core Flask & Web dependencies
+blinker==1.9.0              # Signals support for Flask
+Flask==3.1.1                # Web framework
+flask-cors==5.0.1           # Cross-Origin Resource Sharing support
+Werkzeug==3.1.3             # WSGI utility library
+Jinja2==3.1.6               # Templating engine
+MarkupSafe==3.0.2           # HTML/XML markup string safety
+itsdangerous==2.2.0         # Security helpers
+click==8.2.0                # Command line interface toolkit
+
+# Database connectivity
+mysql-connector==2.2.9      # MySQL database connector (legacy)
+mysql-connector-python==9.3.0  # MySQL database connector (primary)
+
+# HTTP/API clients
+requests==2.32.3            # HTTP requests library
+urllib3==2.4.0              # URL handling
+certifi==2025.4.26          # SSL certificates
+idna==3.10                  # Internationalized Domain Names
+charset-normalizer==3.4.2   # Character encoding normalization
+
+# Author Note:
+# These versions have been tested together for compatibility.
+# Update carefully and test after making changes.
