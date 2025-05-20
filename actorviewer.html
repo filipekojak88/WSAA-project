@@ -6,6 +6,17 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <!-- jQuery (full version to support $.ajax) -->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <style>
+        .pagination .page-link {
+            margin: 0 3px;
+            border-radius: 3px !important;
+        }
+    
+        .pagination .page-item.active .page-link {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+    </style>
 </head>
 
 <body>
@@ -29,7 +40,19 @@
             </thead>
             <tbody></tbody>
         </table>
-
+        <div id="localPagination" class="d-flex justify-content-center mt-3">
+            <nav aria-label="Actor pagination">
+                <ul class="pagination">
+                    <li class="page-item disabled" id="prevPageLocal">
+                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                    </li>
+                    <li class="page-item active"><span class="page-link" id="currentPageLocal">1</span></li>
+                    <li class="page-item" id="nextPageLocal">
+                        <a class="page-link" href="#">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
         <div id='addUpdateForm' class="card p-3 mb-4" style="display: none">
             <h2 class="card-title">
                 <span id="addLabel">Add an Actor</span>
@@ -97,6 +120,19 @@
                     </thead>
                     <tbody></tbody>
                 </table>
+                <div id="tmdbPagination" class="d-flex justify-content-center mt-3" style="display: none;">
+                    <nav aria-label="TMDB pagination">
+                        <ul class="pagination">
+                            <li class="page-item disabled" id="prevPageTmdb">
+                                <a class="page-link" href="#" tabindex="-1">Previous</a>
+                            </li>
+                            <li class="page-item active"><span class="page-link" id="currentPageTmdb">1</span></li>
+                            <li class="page-item" id="nextPageTmdb">
+                                <a class="page-link" href="#">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
             </div>
         </div>
     </div>
@@ -122,6 +158,14 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
     <script>
+        // Pagination variables
+        let currentLocalPage = 1;
+        const localPerPage = 10;
+        let totalLocalPages = 1;
+
+        let currentTmdbPage = 1;
+        let totalTmdbPages = 1;
+        
         // Date formatting
         const formatDate = (dateStr) => {
             if (!dateStr) return '';
@@ -190,34 +234,58 @@
         });
 
         // CRUD Operations
-        const loadActors = () => {
+        const loadActors = (page = 1) => {
+            currentLocalPage = page;
             $.ajax({
-                url: '/actors',
+                url: `/actors?page=${page}&per_page=${localPerPage}`,
                 method: 'GET',
-                success: (actors) => {
+                success: (data) => {
+                    const actors = data.actors || [];
+                    totalLocalPages = data.total_pages || 1;
+
                     const tbody = $('#actorTable tbody').empty();
                     actors.forEach(actor => {
                         tbody.append(`
-                            <tr data-id="${actor.id}">
-                                <td>${actor.id}</td>
-                                <td class="actor-name">${actor.name}</td>
-                                <td class="actor-gender">${actor.gender}</td>
-                                <td class="actor-dob" data-date="${actor.dob}">${formatDate(actor.dob)}</td>
-                                <td class="actor-country">${actor.country}</td>
-                                <td>
-                                    <button class="btn btn-sm btn-primary mr-1" onclick="showUpdate(this)">Update</button>
-                                    <button class="btn btn-sm btn-danger" onclick="deleteActor(${actor.id})">Delete</button>
-                                </td>
-                            </tr>
-                        `);
+                    <tr data-id="${actor.id}">
+                        <td>${actor.id}</td>
+                        <td class="actor-name">${actor.name}</td>
+                        <td class="actor-gender">${actor.gender}</td>
+                        <td class="actor-dob" data-date="${actor.dob}">${formatDate(actor.dob)}</td>
+                        <td class="actor-country">${actor.country}</td>
+                        <td>
+                            <button class="btn btn-sm btn-primary mr-1" onclick="showUpdate(this)">Update</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteActor(${actor.id})">Delete</button>
+                        </td>
+                    </tr>
+                `);
                     });
+
+                    // Update pagination controls
+                    updateLocalPagination();
                 },
                 error: (xhr, status, error) => {
                     console.error("Error loading actors:", error);
                 }
             });
+        };        
+        const updateLocalPagination = () => {
+            $('#currentPageLocal').text(currentLocalPage);
+            $('#prevPageLocal').toggleClass('disabled', currentLocalPage === 1);
+            $('#nextPageLocal').toggleClass('disabled', currentLocalPage >= totalLocalPages);
         };
+        $(document).on('click', '#prevPageLocal', (e) => {
+            e.preventDefault();
+            if (currentLocalPage > 1) {
+                loadActors(currentLocalPage - 1);
+            }
+        });
 
+        $(document).on('click', '#nextPageLocal', (e) => {
+            e.preventDefault();
+            if (currentLocalPage < totalLocalPages) {
+                loadActors(currentLocalPage + 1);
+            }
+        });
         const loadCountries = () => {
             $.ajax({
                 url: '/countries',
@@ -286,34 +354,38 @@
         };
     
         // TMDB Integration Functions
-        const searchTmdb = () => {
+        const searchTmdb = (page = 1) => {
+            currentTmdbPage = page;
             const query = $('#tmdbSearchQuery').val().trim();
             if (!query) return;
 
             $.ajax({
-                url: `/tmdb/search/${encodeURIComponent(query)}`,
+                url: `/tmdb/search/${encodeURIComponent(query)}?page=${page}`,
                 method: 'GET',
                 success: (data) => {
                     const results = data.results || [];
-                    const tbody = $('#tmdbResultsTable tbody').empty();
+                    totalTmdbPages = data.total_pages || 1;
 
+                    const tbody = $('#tmdbResultsTable tbody').empty();
                     results.forEach(actor => {
                         const knownFor = actor.known_for.map(item => item.title || item.name).join(', ');
                         tbody.append(`
-                            <tr>
-                                <td>${actor.name}</td>
-                                <td>${knownFor}</td>
-                                <td>
-                                    <button class="btn btn-sm btn-info mr-1" 
-                                        onclick="viewTmdbActorDetails(${actor.id})">Details</button>
-                                    <button class="btn btn-sm btn-success" 
-                                        onclick="importTmdbActor(${actor.id})">Import</button>
-                                </td>
-                            </tr>
-                        `);
+                    <tr>
+                        <td>${actor.name}</td>
+                        <td>${knownFor}</td>
+                        <td>
+                            <button class="btn btn-sm btn-info mr-1" 
+                                onclick="viewTmdbActorDetails(${actor.id})">Details</button>
+                            <button class="btn btn-sm btn-success" 
+                                onclick="importTmdbActor(${actor.id})">Import</button>
+                        </td>
+                    </tr>
+                `);
                     });
 
                     $('#tmdbResults').show();
+                    $('#tmdbPagination').show();
+                    updateTmdbPagination();
                 },
                 error: (xhr, status, error) => {
                     console.error("Error searching TMDB:", error);
@@ -321,6 +393,25 @@
                 }
             });
         };
+        const updateTmdbPagination = () => {
+            $('#currentPageTmdb').text(currentTmdbPage);
+                $('#prevPageTmdb').toggleClass('disabled', currentTmdbPage === 1);
+                $('#nextPageTmdb').toggleClass('disabled', currentTmdbPage >= totalTmdbPages);
+        };
+
+        $(document).on('click', '#prevPageTmdb', (e) => {
+            e.preventDefault();
+            if (currentTmdbPage > 1) {
+                searchTmdb(currentTmdbPage - 1);
+            }
+        });
+
+        $(document).on('click', '#nextPageTmdb', (e) => {
+            e.preventDefault();
+            if (currentTmdbPage < totalTmdbPages) {
+                searchTmdb(currentTmdbPage + 1);
+            }
+        });
 
         const viewTmdbActorDetails = (actorId) => {
             $.ajax({

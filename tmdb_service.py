@@ -3,7 +3,7 @@ import dbconfig as cfg
 
 class TMDBService:
     @staticmethod
-    def search_actors(query):
+    def search_actors(query, page=1):
         url = f"{cfg.tmdb['base_url']}/search/person"
         headers = {
             "Authorization": f"Bearer {cfg.tmdb['bearer_token']}",
@@ -13,9 +13,9 @@ class TMDBService:
             "query": query,
             "include_adult": False,
             "language": "en-US",
-            "page": 1
-        }
-        
+            "page": page
+      }
+    
         response = requests.get(url, headers=headers, params=params)
         response.raise_for_status()
         return response.json()

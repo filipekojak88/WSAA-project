@@ -22,9 +22,25 @@ def index():
 @app.route('/actors')
 @cross_origin()
 def getAll():
-    #print("in getall")
-    results = actorDAO.getAll()
-    return jsonify(results)
+    page = request.args.get('page', default=1, type=int)
+    per_page = request.args.get('per_page', default=10, type=int)
+    
+    # Get all actors first (you might want to optimize this later)
+    all_actors = actorDAO.getAll()
+    
+    # Calculate pagination
+    total = len(all_actors)
+    start = (page - 1) * per_page
+    end = start + per_page
+    paginated_actors = all_actors[start:end]
+    
+    return jsonify({
+        'actors': paginated_actors,
+        'total': total,
+        'page': page,
+        'per_page': per_page,
+        'total_pages': (total + per_page - 1) // per_page
+    })
 
 #curl "http://127.0.0.1:5000/actors/2"
 @app.route('/actors/<int:id>')
@@ -110,8 +126,9 @@ def get_countries():
 @app.route('/tmdb/search/<string:query>')
 @cross_origin()
 def search_tmdb(query):
+    page = request.args.get('page', default=1, type=int)
     try:
-        results = TMDBService.search_actors(query)
+        results = TMDBService.search_actors(query, page=page)
         return jsonify(results)
     except Exception as e:
         print(f"Error searching TMDB: {e}")
