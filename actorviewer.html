@@ -418,8 +418,16 @@
                 url: `/tmdb/actor/${actorId}`,
                 method: 'GET',
                 success: (actor) => {
+                    const genderMap = {
+                        0: "Not specified",
+                        1: "Female",
+                        2: "Male",
+                        3: "Non-binary"
+                    };
+                    const gender = genderMap[actor.gender] || "Unknown";
                     const details = `
                         <p><strong>Name:</strong> ${actor.name}</p>
+                        <p><strong>Gender:</strong> ${gender}</p>
                         <p>
                             <strong>Date of Birth: </strong>${formatDate(actor.birthday) || 'Unknown'}<br>
                             <small class="text-muted">(DD/MM/YYYY)</small>
