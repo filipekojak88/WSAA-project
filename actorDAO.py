@@ -3,118 +3,123 @@
 # It provides methods to perform CRUD (Create, Read, Update, Delete) operations on the Actor table.
 # Author: Filipe Carvalho
 
+# Import necessary libraries
 import mysql.connector
 import dbconfig as cfg
-class ActorDAO:
-    connection=""
-    cursor =''
-    host=       ''
-    user=       ''
-    password=   ''
-    database=   ''
-    
-    def __init__(self):
-        self.host=       cfg.mysql['host']
-        self.user=       cfg.mysql['user']
-        self.password=   cfg.mysql['password']
-        self.database=   cfg.mysql['database']
 
+class ActorDAO:
+    """Data Access Object for Actor operations"""
+
+
+    def __init__(self):
+        # Initialize the database connection parameters
+        self.host = cfg.mysql['host']
+        self.user = cfg.mysql['user']
+        self.password = cfg.mysql['password']
+        self.database = cfg.mysql['database']
+        self.connection = None
+        self.cursor = None
+    
     def getcursor(self): 
+        # Establish a connection to the MySQL database
         self.connection = mysql.connector.connect(
-            host=       self.host,
-            user=       self.user,
-            password=   self.password,
-            database=   self.database,
+            host = self.host,
+            user = self.user,
+            password = self.password,
+            database = self.database,
         )
         self.cursor = self.connection.cursor()
         return self.cursor
-
+    
     def closeAll(self):
-        self.connection.close()
-        self.cursor.close()
-         
+        # Close the database connection and cursor
+        if self.cursor:
+            self.cursor.close()
+        if self.connection:
+            self.connection.close()
+        
+    # CRUD operations
     def getAll(self):
+        # Retrieve all actors from the database
         cursor = self.getcursor()
-        sql="SELECT id, name, gender, dob, country FROM actor"
+        sql="""SELECT id, name, gender, dob, country 
+               FROM actor"""
         cursor.execute(sql)
-        results = cursor.fetchall()
-        returnArray = []        
-        for result in results:            
-            returnArray.append(self.convertToDictionary(result))        
+        results = [self.convertToDictionary(row) for row in cursor.fetchall()]       
         self.closeAll()
-        return returnArray
+        return results
 
     def findByID(self, id):
+        # Retrieve an actor by ID
         cursor = self.getcursor()
-        sql="SELECT id, name, gender, dob, country FROM actor WHERE id = %s"
-        values = (id,)
-
-        cursor.execute(sql, values)
-        result = cursor.fetchone()
-        returnvalue = self.convertToDictionary(result)
+        sql="""SELECT id, name, gender, dob, country 
+               FROM actor 
+               WHERE id = %s"""
+        cursor.execute(sql, (id,))
+        result = self.convertToDictionary(cursor.fetchone())
         self.closeAll()
-        return returnvalue
+        return result
 
     def create(self, actor):
+        # Create a new actor into the database
         cursor = self.getcursor()
-               
-        sql="INSERT INTO actor (name, gender, dob, country) VALUES (%s, %s, %s, %s)"
-        values = (actor.get("name"), actor.get("gender"), actor.get("dob"), actor.get("country"))
-        print("Actor to insert:", actor)
-        print("SQL Values:", values)
+        sql="""INSERT INTO actor (name, gender, dob, country) 
+               VALUES (%s, %s, %s, %s)"""
+        values = (
+            actor.get("name"), 
+            actor.get("gender"), 
+            actor.get("dob"), 
+            actor.get("country")
+        )
         cursor.execute(sql, values)
-
         self.connection.commit()
-        new_actor_id = cursor.lastrowid
-        actor["id"] = new_actor_id
+        actor["id"] = cursor.lastrowid
         self.closeAll()
         return actor
 
-
     def update(self, id, actor):
+        # Update an existing actor in the database
         cursor = self.getcursor()
-        sql = "UPDATE actor SET name=%s, gender=%s, dob=%s, country=%s WHERE id=%s"
-        print(f"Update actor {actor}")
-        values = (actor.get("name"), actor.get("gender"), actor.get("dob"), actor.get("country"), id)
+        sql = """UPDATE actor
+                SET name=%s, gender=%s, dob=%s, country=%s 
+                WHERE id=%s"""
+        values = (
+            actor.get("name"),
+            actor.get("gender"), 
+            actor.get("dob"), 
+            actor.get("country"), 
+            id
+        )
         cursor.execute(sql, values)
         self.connection.commit()
         self.closeAll()
         
     def delete(self, id):
+        # Delete an actor from the database
         cursor = self.getcursor()
-        sql="DELETE FROM actor WHERE id = %s"
-        values = (id,)
-
-        cursor.execute(sql, values)
-
+        sql = """DELETE FROM actor 
+                WHERE id = %s"""
+        cursor.execute(sql, (id,))
         self.connection.commit()
         self.closeAll()
-        
-        print("Deleted actor successfully!")
-
+    
+    # Helper method
     def convertToDictionary(self, result_line):
-        attkeys = ['id', 'name', 'gender', 'dob', 'country']
-        actor = {}
-        for i, attrib in enumerate(result_line):
-            actor[attkeys[i]] = attrib
-        return actor
+        # Convert a result line from the database into a dictionary
+        keys = ['id', 'name', 'gender', 'dob', 'country']
+        return dict(zip(keys, result_line)) if result_line else None
     
+    # Country method
     def getAllCountries(self):
+        # Retrieve all countries from the database
         cursor = self.getcursor()
-        sql = "SELECT id, name FROM country ORDER BY name"
+        sql = """SELECT id, name 
+                FROM country 
+                ORDER BY name"""
         cursor.execute(sql)
-        results = cursor.fetchall()
-        country_list = [{"id": row[0], "name": row[1]} for row in results]
+        results = [{"id": row[0], "name": row[1]} for row in cursor.fetchall()]
         self.closeAll()
-        return country_list
-
-    def getCountryIdByName(self):
-        cursor = self.getcursor()
-        sql = "SELECT name FROM country ORDER BY name"
-        cursor.execute(sql)
-        results = cursor.fetchall()
-        country_list = [{"name": row[0]} for row in results]
-        self.closeAll()
-        return country_list
+        return results
     
+# An instance of the ActorDAO class    
 actorDAO = ActorDAO()

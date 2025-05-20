@@ -1,7 +1,7 @@
 """
 Title: Database Configuration
 Description: This file contains the configuration settings for connecting to a MySQL database and TMDB API.
-#Author: Filipe Carvalho
+Author: Filipe Carvalho
 """
 
 # MySQL database configuration

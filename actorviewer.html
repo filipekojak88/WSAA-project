@@ -21,7 +21,17 @@
 
 <body>
     <div class="container mt-4">
-        <h1>Actors</h1>
+        <h1 class="text-center">Actors Management System</h1>
+        <div class="mb-3">
+            <p class="lead">
+                View and manage your actor database. You can add new actors manually,
+                edit existing entries, or import actors from TMDB using the search tool below.
+            </p>
+            <p class="text-muted small">
+                Click "Add Actor" to create new records, or use the action buttons
+                to update/delete existing entries.
+            </p>
+        </div>
         <button id="showAddButton" class="btn btn-success mb-3" onclick="showAdd()">Add Actor</button>
 
         <table class="table table-striped" id="actorTable">
