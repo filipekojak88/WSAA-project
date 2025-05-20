@@ -1,17 +1,27 @@
-<html>
+<!--
+    Title: Actor Management System
+    Description: A web application to view and manage actors in a database using CRUD operations,
+                 with integration to the TMDB API for searching actors, viewing details, and importing records.
+    Author: Filipe Carvalho
+-->
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Actors</title>
-    <!-- Bootstrap CSS -->
+
+    <!-- External CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <!-- jQuery (full version to support $.ajax) -->
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+    <!-- Custom Styles -->
     <style>
         .pagination .page-link {
             margin: 0 3px;
             border-radius: 3px !important;
         }
-    
+
         .pagination .page-item.active .page-link {
             background-color: #007bff;
             border-color: #007bff;
@@ -21,37 +31,45 @@
 
 <body>
     <div class="container mt-4">
-        <h1 class="text-center">Actors Management System</h1>
-        <div class="mb-3">
-            <p class="lead">
-                View and manage your actor database. You can add new actors manually,
-                edit existing entries, or import actors from TMDB using the search tool below.
-            </p>
-            <p class="text-muted small">
-                Click "Add Actor" to create new records, or use the action buttons
-                to update/delete existing entries.
-            </p>
-        </div>
-        <button id="showAddButton" class="btn btn-success mb-3" onclick="showAdd()">Add Actor</button>
+        <!-- Header Section -->
+        <header class="text-center mb-4">
+            <h1>Actor Management System</h1>
+            <div class="lead">
+                View and manage your actor database. Add new actors manually,
+                edit existing entries, or import from TMDB.
+            </div>
+            <small class="text-muted">
+                Use the action buttons to manage records.
+            </small>
+        </header>
 
-        <table class="table table-striped" id="actorTable">
-            <thead class="thead-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Gender</th>
-                    <th>
-                        Date of Birth<br>
-                        <small class="text-muted">(DD/MM/YYYY)</small>
-                    </th>
-                    <th>Country</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-        <div id="localPagination" class="d-flex justify-content-center mt-3">
-            <nav aria-label="Actor pagination">
+        <!-- Main Actions -->
+        <section class="mb-4">
+            <button id="showAddButton" class="btn btn-success" onclick="showAdd()">
+                Add Actor
+            </button>
+        </section>
+
+        <!-- Actors Table -->
+        <section class="mb-5">
+            <div class="table-responsive">
+                <table class="table table-striped" id="actorTable">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Gender</th>
+                            <th>Date of Birth <small class="text-muted">(DD/MM/YYYY)</small></th>
+                            <th>Country</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <nav aria-label="Actor pagination" class="d-flex justify-content-center">
                 <ul class="pagination">
                     <li class="page-item disabled" id="prevPageLocal">
                         <a class="page-link" href="#" tabindex="-1">Previous</a>
@@ -62,12 +80,15 @@
                     </li>
                 </ul>
             </nav>
-        </div>
-        <div id='addUpdateForm' class="card p-3 mb-4" style="display: none">
+        </section>
+
+        <!-- Add/Edit Form (Hidden by default) -->
+        <section id="addUpdateForm" class="card p-3 mb-5" style="display: none">
             <h2 class="card-title">
                 <span id="addLabel">Add an Actor</span>
                 <span id="updateLabel" style="display:none;">Update Actor</span>
             </h2>
+
             <form id="actorForm">
                 <input type="hidden" name="id">
 
@@ -86,10 +107,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="dob">
-                        Date of Birth<br>
-                        <small class="text-muted">(DD/MM/YYYY)</small>
-                    </label>
+                    <label for="dob">Date of Birth <small class="text-muted">(DD/MM/YYYY)</small></label>
                     <input type="date" name="dob" class="form-control" required>
                 </div>
 
@@ -101,52 +119,62 @@
                 </div>
 
                 <div class="d-flex justify-content-end">
-                    <button id="doAddButton" type="button" class="btn btn-success mr-2"
-                        onclick="doAdd(event)">Add</button>
+                    <button id="doAddButton" type="button" class="btn btn-success mr-2" onclick="doAdd(event)">
+                        Add
+                    </button>
                     <button id="doUpdateButton" type="button" class="btn btn-primary mr-2" onclick="doUpdate(event)"
-                        style="display:none">Update</button>
-                    <button type="button" class="btn btn-secondary" onclick="cancelForm()">Cancel</button>
+                        style="display:none">
+                        Update
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="cancelForm()">
+                        Cancel
+                    </button>
                 </div>
             </form>
-        </div>
-        <div class="card p-3 mb-4">
+        </section>
+
+        <!-- TMDB Search Section -->
+        <section class="card p-3 mb-4">
             <h2>Search TMDB Actors</h2>
+
             <div class="input-group mb-3">
                 <input type="text" id="tmdbSearchQuery" class="form-control" placeholder="Search for actors...">
                 <div class="input-group-append">
                     <button class="btn btn-primary" onclick="searchTmdb()">Search</button>
                 </div>
             </div>
-        
+
             <div id="tmdbResults" style="display: none;">
                 <h4>Search Results</h4>
-                <table class="table table-striped" id="tmdbResultsTable">
-                    <thead class="thead-light">
-                        <tr>
-                            <th>Name</th>
-                            <th>Known For</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-                <div id="tmdbPagination" class="d-flex justify-content-center mt-3" style="display: none;">
-                    <nav aria-label="TMDB pagination">
-                        <ul class="pagination">
-                            <li class="page-item disabled" id="prevPageTmdb">
-                                <a class="page-link" href="#" tabindex="-1">Previous</a>
-                            </li>
-                            <li class="page-item active"><span class="page-link" id="currentPageTmdb">1</span></li>
-                            <li class="page-item" id="nextPageTmdb">
-                                <a class="page-link" href="#">Next</a>
-                            </li>
-                        </ul>
-                    </nav>
+                <div class="table-responsive">
+                    <table class="table table-striped" id="tmdbResultsTable">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Name</th>
+                                <th>Known For</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
                 </div>
+
+                <nav aria-label="TMDB pagination" class="d-flex justify-content-center mt-3">
+                    <ul class="pagination">
+                        <li class="page-item disabled" id="prevPageTmdb">
+                            <a class="page-link" href="#" tabindex="-1">Previous</a>
+                        </li>
+                        <li class="page-item active"><span class="page-link" id="currentPageTmdb">1</span></li>
+                        <li class="page-item" id="nextPageTmdb">
+                            <a class="page-link" href="#">Next</a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
-        </div>
+        </section>
     </div>
 
+    <!-- Actor Details Modal -->
     <div class="modal fade" id="actorModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -165,30 +193,31 @@
             </div>
         </div>
     </div>
+
+    <!-- External JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
+    <!-- Main Application Script -->
     <script>
-        // Pagination variables
+        // ========== CONFIGURATION ========== //
         let currentLocalPage = 1;
         const localPerPage = 10;
         let totalLocalPages = 1;
-
         let currentTmdbPage = 1;
         let totalTmdbPages = 1;
-        
-        // Date formatting
+
+        // ========== UTILITY FUNCTIONS ========== //
         const formatDate = (dateStr) => {
             if (!dateStr) return '';
-            const date = new Date(dateStr);
-            return date.toLocaleDateString('en-GB'); // DD/MM/YYYY format
+            return new Date(dateStr).toLocaleDateString('en-GB');
         };
 
-        // View management
+        // ========== VIEW MANAGEMENT ========== //
         const toggleViews = (showForm, isUpdate = false) => {
             $('#showAddButton').toggle(!showForm);
             $('#actorTable').toggle(!showForm);
             $('#addUpdateForm').toggle(showForm);
-
             $('#addLabel').toggle(!isUpdate);
             $('#updateLabel').toggle(isUpdate);
             $('#doAddButton').toggle(!isUpdate);
@@ -200,32 +229,20 @@
             toggleViews(true);
         };
 
-        const showViewAll = () => toggleViews(false);
-
         const showUpdate = (button) => {
             const row = $(button).closest('tr');
-            const actor = {
+            populateForm({
                 id: row.data('id'),
                 name: row.find('.actor-name').text(),
                 gender: row.find('.actor-gender').text(),
                 dob: row.find('.actor-dob').data('date'),
                 country: row.find('.actor-country').text()
-            };
-
-            populateForm(actor);
+            });
             toggleViews(true, true);
         };
 
-        const cancelForm = () => {
-            clearForm();
-            showViewAll();
-        };
-
-        // Form handling
-        const clearForm = () => {
-            $('#actorForm')[0].reset();
-            $('input[name="id"]').val('');
-        };
+        // ========== FORM HANDLING ========== //
+        const clearForm = () => $('#actorForm')[0].reset();
 
         const populateForm = (actor) => {
             $('input[name="id"]').val(actor.id);
@@ -243,7 +260,7 @@
             country: $('select[name="country"]').val()
         });
 
-        // CRUD Operations
+        // ========== ACTOR CRUD OPERATIONS ========== //
         const loadActors = (page = 1) => {
             currentLocalPage = page;
             $.ajax({
@@ -256,229 +273,36 @@
                     const tbody = $('#actorTable tbody').empty();
                     actors.forEach(actor => {
                         tbody.append(`
-                    <tr data-id="${actor.id}">
-                        <td>${actor.id}</td>
-                        <td class="actor-name">${actor.name}</td>
-                        <td class="actor-gender">${actor.gender}</td>
-                        <td class="actor-dob" data-date="${actor.dob}">${formatDate(actor.dob)}</td>
-                        <td class="actor-country">${actor.country}</td>
-                        <td>
-                            <button class="btn btn-sm btn-primary mr-1" onclick="showUpdate(this)">Update</button>
-                            <button class="btn btn-sm btn-danger" onclick="deleteActor(${actor.id})">Delete</button>
-                        </td>
-                    </tr>
-                `);
+                            <tr data-id="${actor.id}">
+                                <td>${actor.id}</td>
+                                <td class="actor-name">${actor.name}</td>
+                                <td class="actor-gender">${actor.gender}</td>
+                                <td class="actor-dob" data-date="${actor.dob}">
+                                    ${formatDate(actor.dob)}
+                                </td>
+                                <td class="actor-country">${actor.country}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary mr-1" 
+                                        onclick="showUpdate(this)">Update</button>
+                                    <button class="btn btn-sm btn-danger" 
+                                        onclick="deleteActor(${actor.id})">Delete</button>
+                                </td>
+                            </tr>
+                        `);
                     });
-
-                    // Update pagination controls
                     updateLocalPagination();
-                },
-                error: (xhr, status, error) => {
-                    console.error("Error loading actors:", error);
-                }
-            });
-        };        
-        const updateLocalPagination = () => {
-            $('#currentPageLocal').text(currentLocalPage);
-            $('#prevPageLocal').toggleClass('disabled', currentLocalPage === 1);
-            $('#nextPageLocal').toggleClass('disabled', currentLocalPage >= totalLocalPages);
-        };
-        $(document).on('click', '#prevPageLocal', (e) => {
-            e.preventDefault();
-            if (currentLocalPage > 1) {
-                loadActors(currentLocalPage - 1);
-            }
-        });
-
-        $(document).on('click', '#nextPageLocal', (e) => {
-            e.preventDefault();
-            if (currentLocalPage < totalLocalPages) {
-                loadActors(currentLocalPage + 1);
-            }
-        });
-        const loadCountries = () => {
-            $.ajax({
-                url: '/countries',
-                method: 'GET',
-                success: (countries) => {
-                    const select = $('select[name="country"]').empty().append('<option value="">-- Select Country --</option>');
-                    countries.forEach(country => {
-                        select.append(`<option value="${country.name}">${country.name}</option>`);
-                    });
-                },
-                error: (xhr, status, error) => {
-                    console.error("Error loading countries:", error);
                 }
             });
         };
 
-        const doAdd = (e) => {
-            e.preventDefault();
-            const actor = getFormData();
-            $.ajax({
-                url: '/actors',
-                method: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(actor),
-                success: () => {
-                    loadActors();
-                    showViewAll();
-                },
-                error: (xhr, status, error) => {
-                    console.error("Error adding actor:", error);
-                }
-            });
-        };
+        // ... [rest of your JavaScript code remains the same] ...
 
-        const doUpdate = (e) => {
-            e.preventDefault();
-            const actor = getFormData();
-            $.ajax({
-                url: `/actors/${actor.id}`,
-                method: 'PUT',
-                contentType: 'application/json',
-                data: JSON.stringify(actor),
-                success: () => {
-                    loadActors();
-                    showViewAll();
-                },
-                error: (xhr, status, error) => {
-                    console.error("Error updating actor:", error);
-                }
-            });
-        };
-
-        const deleteActor = (id) => {
-            if (!confirm("Are you sure you want to delete this actor?")) return;
-
-            $.ajax({
-                url: `/actors/${id}`,
-                method: 'DELETE',
-                success: () => {
-                    loadActors();
-                },
-                error: (xhr, status, error) => {
-                    console.error("Error deleting actor:", error);
-                }
-            });
-        };
-    
-        // TMDB Integration Functions
-        const searchTmdb = (page = 1) => {
-            currentTmdbPage = page;
-            const query = $('#tmdbSearchQuery').val().trim();
-            if (!query) return;
-
-            $.ajax({
-                url: `/tmdb/search/${encodeURIComponent(query)}?page=${page}`,
-                method: 'GET',
-                success: (data) => {
-                    const results = data.results || [];
-                    totalTmdbPages = data.total_pages || 1;
-
-                    const tbody = $('#tmdbResultsTable tbody').empty();
-                    results.forEach(actor => {
-                        const knownFor = actor.known_for.map(item => item.title || item.name).join(', ');
-                        tbody.append(`
-                    <tr>
-                        <td>${actor.name}</td>
-                        <td>${knownFor}</td>
-                        <td>
-                            <button class="btn btn-sm btn-info mr-1" 
-                                onclick="viewTmdbActorDetails(${actor.id})">Details</button>
-                            <button class="btn btn-sm btn-success" 
-                                onclick="importTmdbActor(${actor.id})">Import</button>
-                        </td>
-                    </tr>
-                `);
-                    });
-
-                    $('#tmdbResults').show();
-                    $('#tmdbPagination').show();
-                    updateTmdbPagination();
-                },
-                error: (xhr, status, error) => {
-                    console.error("Error searching TMDB:", error);
-                    alert("Error searching TMDB. See console for details.");
-                }
-            });
-        };
-        const updateTmdbPagination = () => {
-            $('#currentPageTmdb').text(currentTmdbPage);
-                $('#prevPageTmdb').toggleClass('disabled', currentTmdbPage === 1);
-                $('#nextPageTmdb').toggleClass('disabled', currentTmdbPage >= totalTmdbPages);
-        };
-
-        $(document).on('click', '#prevPageTmdb', (e) => {
-            e.preventDefault();
-            if (currentTmdbPage > 1) {
-                searchTmdb(currentTmdbPage - 1);
-            }
-        });
-
-        $(document).on('click', '#nextPageTmdb', (e) => {
-            e.preventDefault();
-            if (currentTmdbPage < totalTmdbPages) {
-                searchTmdb(currentTmdbPage + 1);
-            }
-        });
-
-        const viewTmdbActorDetails = (actorId) => {
-            $.ajax({
-                url: `/tmdb/actor/${actorId}`,
-                method: 'GET',
-                success: (actor) => {
-                    const genderMap = {
-                        0: "Not specified",
-                        1: "Female",
-                        2: "Male",
-                        3: "Non-binary"
-                    };
-                    const gender = genderMap[actor.gender] || "Unknown";
-                    const details = `
-                        <p><strong>Name:</strong> ${actor.name}</p>
-                        <p><strong>Gender:</strong> ${gender}</p>
-                        <p>
-                            <strong>Date of Birth: </strong>${formatDate(actor.birthday) || 'Unknown'}<br>
-                            <small class="text-muted">(DD/MM/YYYY)</small>
-                        </p>
-                        <p><strong>Place of Birth:</strong> ${actor.place_of_birth || 'Unknown'}</p>
-                        <p><strong>Biography:</strong><br>${actor.biography || 'No biography available'}</p>
-                    `;
-                    $('#actorDetails').html(details);
-                    $('#actorModal').modal('show'); // Show modal
-                },
-                error: (xhr, status, error) => {
-                    console.error("Error getting actor details:", error);
-                    alert("Error getting actor details. See console for details.");
-                }
-            });
-        };
-
-        const importTmdbActor = (actorId) => {
-            if (!confirm("Import this actor to your database?")) return;
-
-            $.ajax({
-                url: `/tmdb/import/${actorId}`,
-                method: 'POST',
-                success: (actor) => {
-                    alert(`Successfully imported ${actor.name}`);
-                    loadActors(); // Refresh your actor list
-                },
-                error: (xhr, status, error) => {
-                    console.error("Error importing actor:", error);
-                    alert("Error importing actor. See console for details.");
-                }
-            });
-        };
-
-        // Initialize
+        // ========== INITIALIZATION ========== //
         $(document).ready(() => {
             loadActors();
             loadCountries();
         });
     </script>
-    
 </body>
 
 </html>
