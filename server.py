@@ -154,7 +154,7 @@ def import_tmdb_actor(actor_id):
         # Map TMDB data to your actor model
         actor_data = {
             "name": tmdb_actor.get("name"),
-            "gender": "Male" if tmdb_actor.get("gender") == 2 else "Female",
+            "gender": "Male" if tmdb_actor.get("gender") == 2 else ("Female" if tmdb_actor.get("gender") == 1 else "Unknown"),
             "dob": tmdb_actor.get("birthday") or None,
             "country": tmdb_actor.get("place_of_birth", "").split(",")[-1].strip() if tmdb_actor.get("place_of_birth") else "Unknown"
         }
