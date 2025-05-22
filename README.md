@@ -87,8 +87,8 @@ WSAA-project/
    ```sql
    CREATE TABLE actor (
        id INT AUTO_INCREMENT PRIMARY KEY,
-       name VARCHAR(255) NOT NULL,
-       gender ENUM('Male', 'Female', 'Other') NOT NULL,
+       name VARCHAR(255),
+       gender VARCHAR(255),
        dob DATE,
        country VARCHAR(250)
    );
