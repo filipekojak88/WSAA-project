@@ -44,6 +44,9 @@ WSAA-project/
 
 ## Functionalities
 
+- **actorDAO.py**: The class ActorDAO within `actorDAO.py` acts as an intermediary between the Python code and the MySQL database, handling all the database operations for actor records. It follows the DAO (Data Access Object) pattern, which helps keep the database logic separate from the rest of the application [[1]](#1). The class includes standard CRUD operations—create, read (getAll, findByID), update, and delete—allowing users to manage actor data easily. To prevent security risks like SQL injection, the code uses parameterized queries [[2]](#2), ensuring that user input is safely processed. The helper method convertToDictionary transforms database results into Python dictionaries, making the data easier to work with [[3]](#3). The script also manages database connections properly by opening and closing them in getcursor and closeAll, following best practices for resource handling [[4]](#4). Finally, the database credentials are stored separately in dbconfig.py, which improves security and makes the code more maintainable [[5]](#5).
+
+- **actorviewer.html**: 
 
 
 ## Installation Instructions
@@ -147,4 +150,12 @@ Contributions are welcome! Drop me an email to filipeferc88@gmail.com and let me
 
 ## References:
  
-<a id="1">[1]</a> 
+<a id="1">[1]</a> GeeksforGeeks (2024a) Data Access Object(DAO) design pattern, GeeksforGeeks. Available at: https://www.geeksforgeeks.org/data-access-object-pattern/ 
+
+<a id="2">[2]</a> SQL injection prevention cheat sheet¶ (no date a) SQL Injection Prevention - OWASP Cheat Sheet Series. Available at: https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html
+
+<a id="3">[3]</a> (No date) How to convert SQL query results into a python dictionary - stack overflow. Available at: https://stackoverflow.com/questions/28755505/how-to-convert-sql-query-results-into-a-python-dictionary
+
+<a id="4">[4]</a> (No date a) What are best practices on managing database connections in .net? - stack overflow. Available at: https://stackoverflow.com/questions/3258788/what-are-best-practices-on-managing-database-connections-in-net 
+
+<a id="5">[5]</a> Chapter 2 guidelines for python developers (no date) MySQL. Available at: https://dev.mysql.com/doc/connector-python/en/connector-python-coding.html. 
