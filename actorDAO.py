@@ -1,7 +1,9 @@
-# Name: Actor DAO
-# Description: This is a data access object (DAO) for the Actor table in a MySQL database.
-# It provides methods to perform CRUD (Create, Read, Update, Delete) operations on the Actor table.
-# Author: Filipe Carvalho
+"""
+Name: Actor DAO
+Description: This is a data access object (DAO) for the Actor table in a MySQL database.
+It provides methods to perform CRUD (Create, Read, Update, Delete) operations on the Actor table.
+Author: Filipe Carvalho
+"""
 
 # Import necessary libraries
 import mysql.connector

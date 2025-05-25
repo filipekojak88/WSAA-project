@@ -44,11 +44,22 @@ WSAA-project/
 
 ## Functionalities
 
-- **actorDAO.py**: The class ActorDAO within `actorDAO.py` acts as an intermediary between the Python code and the MySQL database, handling all the database operations for actor records. It follows the DAO (Data Access Object) pattern, which helps keep the database logic separate from the rest of the application [[1]](#1). The class includes standard CRUD operations—create, read (getAll, findByID), update, and delete—allowing users to manage actor data easily. To prevent security risks like SQL injection, the code uses parameterized queries [[2]](#2), ensuring that user input is safely processed. The helper method convertToDictionary transforms database results into Python dictionaries, making the data easier to work with [[3]](#3). The script also manages database connections properly by opening and closing them in getcursor and closeAll, following best practices for resource handling [[4]](#4). Finally, the database credentials are stored separately in dbconfig.py, which improves security and makes the code more maintainable [[5]](#5).
+**actorDAO.py**: 
 
-- **actorviewer.html**: This web application implements a comprehensive web interface for managing actor records through CRUD operations. The application features a dual-interface design: a local actor database with full editing capabilities and integration with The Movie Database (TMDB) API for external data retrieval [[6]](#6). The interface utilizes Bootstrap's responsive grid system and component library [[7]](#7) to present data in paginated tables, with client-side pagination logic [[8]](#8) implemented through jQuery AJAX calls [[9]](#9) that fetch data in chunks of 10 records per page (configurable via the localPerPage variable). This pagination system includes previous/next navigation controls and active page indicators, following established UX patterns for data tables [[10]](#10).
+The class ActorDAO within `actorDAO.py` acts as an intermediary between the Python code and the MySQL database, handling all the database operations for actor records. It follows the DAO (Data Access Object) pattern, which helps keep the database logic separate from the rest of the application [[1]](#1). The class includes standard CRUD operations—create, read (getAll, findByID), update, and delete—allowing users to manage actor data easily. To prevent security risks like SQL injection, the code uses parameterized queries [[2]](#2), ensuring that user input is safely processed. The helper method convertToDictionary transforms database results into Python dictionaries, making the data easier to work with [[3]](#3). The script also manages database connections properly by opening and closing them in getcursor and closeAll, following best practices for resource handling [[4]](#4). Finally, the database credentials are stored separately in dbconfig.py, which improves security and makes the code more maintainable [[5]](#5).
 
-Key technical implementations include: (1) dynamic form handling that toggles between add/edit modes while maintaining state [[11]](#11) [[12]](#12) [[13]](#13), (2) secure data validation through parameterized AJAX requests to prevent injection attacks [[14]](#14) [[2]](#2), (3) locale-aware date formatting using JavaScript's Date object [[15]](#15) to display birthdays in DD/MM/YYYY format, and (4) modal dialogs for TMDB actor details using Bootstrap's modal component [[16]](#16). The TMDB integration implements additional pagination for search results, with API response handling that transforms nested JSON data into readable formats [[17]](#17). All destructive operations employ confirmation dialogs following usability best practices [[18]](#18) [[19]](#19), while error handling provides console feedback for debugging.
+**actorviewer.html**: 
+
+This web application implements a comprehensive web interface for managing actor records through CRUD operations. The application features a dual-interface design: a local actor database with full editing capabilities and integration with The Movie Database (TMDB) API for external data retrieval [[6]](#6). The interface utilizes Bootstrap's responsive grid system and component library [[7]](#7) to present data in paginated tables, with client-side pagination logic [[8]](#8) implemented through jQuery AJAX calls [[9]](#9) that fetch data in chunks of 10 records per page (configurable via the localPerPage variable). This pagination system includes previous/next navigation controls and active page indicators, following established UX patterns for data tables [[10]](#10).
+
+Key technical implementations include: (1) dynamic form handling that toggles between add/edit modes while maintaining state [[11]](#11) [[12]](#12) [[13]](#13), (2) secure data validation through parameterized AJAX requests to prevent injection attacks [[14]](#14) [[2]](#2), (3) locale-aware date formatting using JavaScript's Date object [[15]](#15) to display birthdays in DD/MM/YYYY format, and (4) modal dialogs for TMDB actor details using Bootstrap's modal component [[16]](#16). The TMDB integration implements additional pagination for search results, with API response handling that transforms nested JSON data into readable formats [[17]](#17). All destructive operations employ confirmation dialogs following usability best practices [[18]](#18) [[19]](#19), while error handling provides console feedback for debugging [[20]](#20).
+
+**server.py**:
+
+This Flask server provides the backend for the actor management system, handling all database operations through RESTful API endpoints [[21]](#21). It offers standard CRUD functionality - creating, reading, updating and deleting actor records - with proper error handling for missing data or server issues [[22]](#22). The server includes pagination support for browsing large actor lists [[23]](#23) and integrates with the TMDB API to search and import actor profiles. Security features like CORS headers ensure the API works safely with web frontends [[24]](#24), while presenting a clean route structure (like /actors for all actors and /actors/<id> for specific ones) [[25]](#25).
+
+**tmdb_service.py**:
+
 
 
 ## Installation Instructions
@@ -190,4 +201,14 @@ Contributions are welcome! Drop me an email to filipeferc88@gmail.com and let me
 
 <a id="19">[19]</a> MozDevNet (no date) <dialog>: The dialog element - HTML: Hypertext markup language: MDN</dialog>, MDN Web Docs. Available at: https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/dialog
 
-<a id="20">[20]</a> Mastering the HTML console (no date) Mastering the HTML Console: Essential Tips for Effective Debugging. Available at: https://www.dhiwise.com/post/mastering-the-html-console-essential-tips-for-debugging (Accessed: 25 May 2025). 
+<a id="20">[20]</a> Mastering the HTML console (no date) Mastering the HTML Console: Essential Tips for Effective Debugging. Available at: https://www.dhiwise.com/post/mastering-the-html-console-essential-tips-for-debugging 
+
+<a id="21">[21]</a> What is a rest api? (no date) SitePoint. Available at: https://www.sitepoint.com/rest-api/
+
+<a id="22">[22]</a> Wando, H. (2022) How to create a basic CRUD API using python flask, Medium. Available at: https://medium.com/@hillarywando/how-to-create-a-basic-crud-api-using-python-flask-cd68ef5fd7e3
+
+<a id="23">[23]</a> (No date) How to implement pagination in your flask applications for Better User Experience. Available at: https://codymohit.com/how-to-implement-pagination-in-your-flask-applications-for-better-user-experience
+
+<a id="24">[24]</a> Cors (no date) Flask. Available at: https://flask-cors.readthedocs.io/en/latest/
+
+<a id="25">[25]</a> Welcome to flask¶ (no date) Welcome to Flask - Flask Documentation (3.1.x). Available at: https://flask.palletsprojects.com/ (Accessed: 25 May 2025). 
