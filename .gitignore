@@ -172,4 +172,4 @@ cython_debug/
 
 
 # Config files with secrets
-dbconfig.py
+dbconfig
