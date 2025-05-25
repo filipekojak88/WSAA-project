@@ -60,7 +60,7 @@ This Flask server provides the backend for the actor management system, handling
 
 **tmdb_service.py**:
 
-
+This TMDB service handles all the communication with The Movie Database API [[6]](#6). It has two main jobs: searching for actors by name and getting detailed information about specific actors. The code uses Python's requests library to make API calls [[26]](#26) and includes proper error checking to catch any problems. All the API settings like authentication tokens and base URLs are kept separate in the configuration file, which follows good security practices [[5]](#5). The service is designed as a standalone class with static methods, making it easy to reuse throughout the application without creating multiple instances [[27]](#27). When searching, it lets you specify which page of results you want, and when getting actor details, it can also fetch their movie credits in the same request.
 
 ## Installation Instructions
 
@@ -211,4 +211,8 @@ Contributions are welcome! Drop me an email to filipeferc88@gmail.com and let me
 
 <a id="24">[24]</a> Cors (no date) Flask. Available at: https://flask-cors.readthedocs.io/en/latest/
 
-<a id="25">[25]</a> Welcome to flask¶ (no date) Welcome to Flask - Flask Documentation (3.1.x). Available at: https://flask.palletsprojects.com/ (Accessed: 25 May 2025). 
+<a id="25">[25]</a> Welcome to flask¶ (no date) Welcome to Flask - Flask Documentation (3.1.x). Available at: https://flask.palletsprojects.com/
+
+<a id="26">[26]</a> Bui, A. (2024) API requests in Python (P2): Requests library - basic to advanced topics, Medium. Available at: https://medium.com/refined-and-refactored/api-requests-in-python-p2-requests-library-basic-to-advanced-topics-b292b0195bb7
+
+<a id="27">[27]</a> Breuss, M. (2025) Python’s instance, class, and static methods demystified, Real Python. Available at: https://realpython.com/instance-class-and-static-methods-demystified/
