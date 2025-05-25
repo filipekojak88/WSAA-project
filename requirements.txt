@@ -1,6 +1,7 @@
 # Title: Project Requirements
 # Description: This file contains the list of dependencies which are required to run the Actor Management API project.
 # Install using: pip install -r requirements.txt
+# Author: Filipe Carvalho
 
 # Core Flask & Web dependencies
 blinker==1.9.0              # Signals support for Flask
