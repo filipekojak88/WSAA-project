@@ -80,7 +80,7 @@ DeepSeek assisted in debugging MySQL country table integration and TMDB API impl
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/yourusername/WSAA-project.git
+   git clone https://github.com/filipekojak88/WSAA-project.git
    cd WSAA-project
    ```
 
