@@ -44,19 +44,19 @@ WSAA-project/
 
 ## Researched Functionalities 
 
-**_actorDAO.py_**: 
+**_`actorDAO.py`_**: 
 
 The class ActorDAO within `actorDAO.py` acts as an intermediary between the Python code and the MySQL database, handling all the database operations for actor records. It follows the DAO (Data Access Object) pattern, which helps keep the database logic separate from the rest of the application [[1]](#1). The class includes standard CRUD operations—create, read (getAll, findByID), update, and delete—allowing users to manage actor data easily. To prevent security risks like SQL injection, the code uses parameterized queries [[2]](#2), ensuring that user input is safely processed. The helper method convertToDictionary transforms database results into Python dictionaries, making the data easier to work with [[3]](#3). The script also manages database connections properly by opening and closing them in getcursor and closeAll, following best practices for resource handling [[4]](#4). Finally, the database credentials are stored separately in dbconfig.py, which improves security and makes the code more maintainable [[5]](#5).
 
-**_actorviewer.html_**: 
+**_`actorviewer.html`_**: 
 
 This web application implements a comprehensive web interface for managing actor records through CRUD operations. The application features a dual-interface design: a local actor database with full editing capabilities and integration with The Movie Database (TMDB) API for external data retrieval [[6]](#6). The interface utilizes Bootstrap's responsive grid system and component library [[7]](#7) to present data in paginated tables, with client-side pagination logic [[8]](#8) implemented through jQuery AJAX calls [[9]](#9) that fetch data in chunks of 10 records per page (configurable via the localPerPage variable). This pagination system includes previous/next navigation controls and active page indicators, following established UX patterns for data tables [[10]](#10).
 
 Key technical implementations include: (1) dynamic form handling that toggles between add/edit modes while maintaining state [[11]](#11) [[12]](#12) [[13]](#13), (2) secure data validation through parameterized AJAX requests to prevent injection attacks [[14]](#14) [[2]](#2), (3) locale-aware date formatting using JavaScript's Date object [[15]](#15) to display birthdays in DD/MM/YYYY format, and (4) modal dialogs for TMDB actor details using Bootstrap's modal component [[16]](#16). The TMDB integration implements additional pagination for search results, with API response handling that transforms nested JSON data into readable formats [[17]](#17). All destructive operations employ confirmation dialogs following usability best practices [[18]](#18) [[19]](#19), while error handling provides console feedback for debugging [[20]](#20).
 
-ChatGPT was used to support in the layout of this application, the following prompt was used "Prettify this " followed by html script. In order to support the understanding of the code provided by ChatGPT the following prompt was also used "Explain to me what was changed in the code and the function of each item added" [[28]](#28).
+ChatGPT was used to help design and improve the application’s layout. First, an HTML snippet was provided with the prompt "Prettify this:" to enhance its visual structure. Then, to understand the changes, the following prompt was provided "Explain what was modified in the code and the purpose of each addition" [[28]](#28).
 
-**_server.py_**:
+**_`server.py`_**:
 
 This Flask server provides the backend for the actor management system, handling all database operations through RESTful API endpoints [[21]](#21). It offers standard CRUD functionality - creating, reading, updating and deleting actor records - with proper error handling for missing data or server issues [[22]](#22). The server includes pagination support for browsing large actor lists [[23]](#23) and integrates with the TMDB API to search and import actor profiles. Security features like CORS headers ensure the API works safely with web frontends [[24]](#24), while presenting a clean route structure (like /actors for all actors and /actors/<id> for specific ones) [[25]](#25).
 
@@ -66,7 +66,7 @@ This TMDB service handles all the communication with The Movie Database API [[6]
 
 **_troubleshooting_**:
 
-Deepseek was used in this project to support troubleshooting some of the errors that were found when trying to add the table country of MySQL database to the application and when debugging issues related to the inclusion of the TMDB database. To troubleshoot that the following prompt was provided to Deep Seek "How can I troubleshoot the following error " followed by the error from the error log provided in Pythonanywhere [[29]](#29).
+DeepSeek assisted in debugging MySQL country table integration and TMDB API implementation by analyzing PythonAnywhere error logs in response to the following prompt "How can I troubleshoot the following error " followed by the error as displayed in the error log provided in Pythonanywhere [[29]](#29).
 
 ## Installation Instructions
 
